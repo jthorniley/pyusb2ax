@@ -128,21 +128,42 @@ cdef extern from "dynamixel.h":
     int dxl_read_word(int id, int address)
     void dxl_write_word(int id, int address, int value)
 
+cdef dxl_reg_write_word(int id, int address, int value):
+
+    dxl_set_txpacket_id( id )
+    dxl_set_txpacket_instruction( 0x04 ) #REG_WRITE instruction
+    dxl_set_txpacket_parameter(0, address )
+    dxl_set_txpacket_parameter(1, dxl_get_lowbyte(value) )
+    dxl_set_txpacket_parameter(2, dxl_get_highbyte(value) )
+    dxl_set_txpacket_length( 5 )
+
+    dxl_txrx_packet()
+
+cdef dxl_reg_write_byte(int id, int address, int value):
+
+    dxl_set_txpacket_id( id )
+    dxl_set_txpacket_instruction( 0x04 ) #REG_WRITE instruction
+    dxl_set_txpacket_parameter(0, address )
+    dxl_set_txpacket_parameter(1, value )
+    dxl_set_txpacket_length( 4 )
+
+    dxl_txrx_packet()
+
 cdef check_rx_error():
     if dxl_get_rxpacket_error(ERRBIT_VOLTAGE):
-        print "Voltage error"
+        sys.stderr.write( "Voltage error\n")
     if dxl_get_rxpacket_error(ERRBIT_ANGLE ):
-        print "Angle error"
+        sys.stderr.write( "Angle error\n")
     if dxl_get_rxpacket_error(ERRBIT_OVERHEAT):
-        print "Overheat error"
+        sys.stderr.write( "Overheat error\n")
     if dxl_get_rxpacket_error(ERRBIT_RANGE):
-        print "Range error"
+        sys.stderr.write( "Range error\n")
     if dxl_get_rxpacket_error(ERRBIT_CHECKSUM):
-        print "Checksum error"
+        sys.stderr.write( "Checksum error\n")
     if dxl_get_rxpacket_error(ERRBIT_OVERLOAD): 
-        print "Overload error"
+        sys.stderr.write( "Overload error\n")
     if dxl_get_rxpacket_error(ERRBIT_INSTRUCTION): 
-        print "Instruction error"
+        sys.stderr.write( "Instruction error\n")
      
 
 class InitError(Exception):
@@ -283,9 +304,9 @@ usb2ax: USB2AX          : /dev/ttyACM%d
                 self.servo_map[i] = my_map
                 try:
                     delay = self.read(i,"return_delay_time")
-                    if delay > 1:
+                    if delay > 5:
                         if fix_sync_read_delay:
-                            self.write(i,"return_delay_time",1)
+                            self.write(i,"return_delay_time",5)
                             try:
                                 new_delay = self.read(i,"return_delay_time")
                                 sys.stderr.write("usb2ax: INFO: Servo %d return delay set to %d to make compatible with sync_read\n" % (i, new_delay) )
@@ -330,7 +351,7 @@ usb2ax: Success!
     def terminate(self):
         dxl_terminate()
 
-    def write(self,servo_id,parameter,value):
+    def write(self,servo_id,parameter,value,register=False):
         """
         Write to a servos control memory.
 
@@ -342,6 +363,10 @@ usb2ax: Success!
 
         To set the target position of the servo with bus ID 1
         to 512 (i.e. the middle).
+
+        If register is True, does not fully perform the write, but buffers
+        it in servo memory (the REG_WRITE servo instruction). Call
+        action() to make all attached servos performed registered instructions
         """
         if servo_id not in self.servo_map.keys():
             raise ServoNotAttachedError(servo_id)
@@ -355,11 +380,17 @@ usb2ax: Success!
             print "Parameter %s not writable" % parameter
             raise InvalidWriteParameterError()
 
-        func = dxl_write_byte
-        if info[1] == 2:
-            func = dxl_write_word
+        if info[1] == 1:
+            if register:
+                dxl_reg_write_byte(servo_id, info[0], value)
+            else:
+                dxl_write_byte(servo_id, info[0], value)
+        elif info[1] == 2:
+            if register:
+                dxl_reg_write_word(servo_id, info[0], value)
+            else:
+                dxl_write_word(servo_id, info[0], value)
 
-        func(servo_id,info[0],value)
         return
 
     def read(self,servo_id,parameter):
@@ -477,3 +508,10 @@ usb2ax: Success!
         dxl_set_txpacket_length(2)
         dxl_txrx_packet()
         status = dxl_get_result()
+
+
+    def action(self):
+        dxl_set_txpacket_id(0xFE)
+        dxl_set_txpacket_instruction(0x05) # ACTION
+        dxl_set_txpacket_length(2)
+        dxl_txrx_packet()
