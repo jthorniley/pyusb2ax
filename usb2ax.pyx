@@ -383,6 +383,9 @@ usb2ax: Success!
 
     def sync_write(self,ids,parameter,values):
 
+        if len(ids) == 0:
+            return # Nothing to write
+
         for servo_id in ids:
             if servo_id not in self.servo_map.keys():
                 raise ServoNotAttachedError(servo_id)
