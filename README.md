@@ -29,6 +29,8 @@ This does the following:
     import usb2ax
     
     usb2ax.dxl_initialize(0,1) # Expects to see the USB2AX at /dev/ttyACM0, with baud rate 1MBPS
+                               # This is directly wrapping the equivalent function in the C library:
+                               # http://support.robotis.com/en/software/dynamixel_sdk/api_reference/dxl_initialize.htm
     
     usb2ax.write(1,"goal_position",512) # Move the servo with ID 1 to position 512
                                         # (valid values are 0-1024, 512 is in the middle)
