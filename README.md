@@ -34,3 +34,34 @@ This does the following:
                                         # (valid values are 0-1024, 512 is in the middle)
                                         
     print usb2ax.read(1,"present_position") # Prints the actual position reported by the dynamixel.
+
+## Available commands
+
+The library currently supports reading and writing via the above convention to
+the following AX12 control table addresses. Details of these settings can be found
+in the [AX12 manual](http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm)
+
+<table>
+<tr><th>Parameter</th><th>Control table address</th><th>Read (R) or Read/Write(R/W)</th></tr>
+<tr><td>model_no</td><td>0x00</td><td>R</td></tr>
+<tr><td>firmware_version</td><td>0x02</td><td>R</td></tr>
+<tr><td>id</td><td>0x03</td><td>R/W</td></tr>
+<tr><td>baud_rate</td><td>0x04</td><td>R/W</td></tr>
+<tr><td>return_delay_time</td><td>0x05</td><td>R/W</td></tr>
+<tr><td>cw_angle_limit</td><td>0x06</td><td>R/W</td></tr>
+<tr><td>ccw_angle_limit</td><td>0x08</td><td>R/W</td></tr>
+<tr><td>max_torque</td><td>0x0e</td><td>R/W</td></tr>
+<tr><td>torque_enable</td><td>0x18</td><td>R/W</td></tr>
+<tr><td>cw_compliance_margin</td><td>0x1a</td><td>R/W</td></tr>
+<tr><td>ccw_compliance_margin</td><td>0x1b</td><td>R/W</td></tr>
+<tr><td>cw_compliance_slope</td><td>0x1c</td><td>R/W</td></tr>
+<tr><td>ccw_compliance_slope</td><td>0x1d</td><td>R/W</td></tr>
+<tr><td>goal_position</td><td>0x1e</td><td>R/W</td></tr>
+<tr><td>moving_speed</td><td>0x20</td><td>R/W</td></tr>
+<tr><td>torque_limit</td><td>0x22</td><td>R/W</td></tr>
+<tr><td>present_position</td><td>0x24</td><td>R</td></tr>
+<tr><td>present_speed</td><td>0x26</td><td>R</td></tr>
+<tr><td>present_load</td><td>0x28</td><td>R</td></tr>
+<tr><td>punch</td><td>0x30</td><td>R/W</td></tr>
+</table>
+
