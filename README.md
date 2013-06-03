@@ -8,8 +8,7 @@ This is a build script and simple python module that allows you to easily contro
 
 ## Requirements
 
-There should be no real requirements, but the file dynamixel.c is automatically generated using pybindgen if you delete it. However
-you shouldn't need to do that as the one in the repository should be fine.
+Nothing complicated other than python2.7, and of course a Dynamixel AX12, a USB2AX, and some way to connect power. I'm assuming you're reasonably familiar with that stuff.
 
 ## Installation
 
