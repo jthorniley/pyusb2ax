@@ -12,7 +12,7 @@ This uses pybindgen, which in turn relies on gccxml and pygccxml to generate bin
 
 ## Installation
 
-    git clone https://github.com/jthorniley/pyusb2ax.git
+    git clone git://github.com/jthorniley/pyusb2ax.git
     cd pyusb2ax
     python setup.py install
     
@@ -39,10 +39,13 @@ This does the following:
 
 The library currently supports reading and writing via the above convention to
 the following AX12 control table addresses. Details of these settings can be found
-in the [AX12 manual](http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm)
+in the [AX12 manual](http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm).
+
+Note that usb2ax.write will fail if you try to write to one of the values that is
+listed as read-only below.
 
 <table>
-<tr><th>Parameter</th><th>Control table address</th><th>Read (R) or Read/Write(R/W)</th></tr>
+<tr><th>Parameter</th><th>Control table address</th><th>Read-only (R) or Read/Write(R/W)</th></tr>
 <tr><td>model_no</td><td>0x00</td><td>R</td></tr>
 <tr><td>firmware_version</td><td>0x02</td><td>R</td></tr>
 <tr><td>id</td><td>0x03</td><td>R/W</td></tr>
