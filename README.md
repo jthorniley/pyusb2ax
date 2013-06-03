@@ -72,6 +72,10 @@ listed as read-only below.
 
 ## TODO
 
-A nicer UI and better documentation.
+Support all the functions.
+
+Better documentation.
+
+Interface for setting angles in radians.
 
 Support for the [SYNC_READ](http://www.xevelabs.com/doku.php?id=product:usb2ax:advanced_instructions) command.
