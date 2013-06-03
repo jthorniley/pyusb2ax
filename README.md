@@ -2,7 +2,7 @@
 
 A simple wrapper to access Dynamixel AX servos using the USB2AX interface under Linux.
 
-_N.B. This is a python module that wraps a Linux C library - it will not help you access Dynamixel's from other operating systems._
+_N.B. This is a python module that wraps a Linux C library - it will not help you access Dynamixels from other operating systems._
 
 This is a build script and simple python module that allows you to easily control Dynamixel AX-12 servos (and possibly other models) using a [USB2AX](http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax). It wraps the standard dynamixel C library available [here](http://support.robotis.com/en/software/dynamixel_sdk/usb2dynamixel/usb2dxl_linux.htm) after applying a patch to make it compatible with the USB2AX.
 
