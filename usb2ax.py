@@ -1,7 +1,5 @@
 from dynamixel import *
 
-FRONT_LEG_OFFSET = 0.1
-
 COMM_TXSUCCESS = 0
 COMM_RXSUCCESS = 1
 COMM_TXFAIL = 2
