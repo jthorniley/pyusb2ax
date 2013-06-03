@@ -2,9 +2,6 @@ from distutils.core import setup, Extension
 import distutils.core
 import distutils.command.build_ext
 
-import pybindgen
-from pybindgen import FileCodeSink
-from pybindgen.gccxmlparser import ModuleParser
 
 import subprocess
 import os.path
@@ -93,11 +90,16 @@ patch = """diff -U 3 a/dxl_hal.c b/dxl_hal.c
 """
  	
 def dynamixel_gen():
-    module_parser = ModuleParser("dynamixel","::")
-    module = module_parser.parse(["DXL_SDK_LINUX_v1_01/include/dynamixel.h"])
-    #pybindgen.write_preamble(FileCodeSink(sys.stdout))
-    module.add_include('"dynamixel.h"')
-    module.generate(FileCodeSink(open("dynamixel.c","w+")))
+    if not os.path.exists("dynamixel.c"):
+        import pybindgen
+        from pybindgen import FileCodeSink
+        from pybindgen.gccxmlparser import ModuleParser
+        print "Generating dynamixel.c"
+        module_parser = ModuleParser("dynamixel","::")
+        module = module_parser.parse(["DXL_SDK_LINUX_v1_01/include/dynamixel.h"])
+        #pybindgen.write_preamble(FileCodeSink(sys.stdout))
+        module.add_include('"dynamixel.h"')
+        module.generate(FileCodeSink(open("dynamixel.c","w+")))
 
 def patch_dxl_sdk():
 

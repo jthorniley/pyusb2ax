@@ -8,7 +8,8 @@ This is a build script and simple python module that allows you to easily contro
 
 ## Requirements
 
-This uses pybindgen, which in turn relies on gccxml and pygccxml to generate bindings from C code.
+There should be no real requirements, but the file dynamixel.c is automatically generated using pybindgen if you delete it. However
+you shouldn't need to do that as the one in the repository should be fine.
 
 ## Installation
 
