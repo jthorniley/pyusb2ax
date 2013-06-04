@@ -1,36 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="PyUSB2AX : A python wrapper for the dynamixel SDK to work with the USB2AX interface " />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>PyUSB2AX by jthorniley</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>PyUSB2AX</title>
   </head>
-
   <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/jthorniley/pyusb2ax">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/jthorniley/pyusb2ax/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/jthorniley/pyusb2ax/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/jthorniley/pyusb2ax">View on GitHub</a>
+    <div class="wrapper">
 
-          <h1 id="project_title">PyUSB2AX</h1>
-          <h2 id="project_tagline">A python wrapper for the dynamixel SDK to work with the USB2AX interface </h2>
+      <section>
+        <div id="title">
+          <h1>PyUSB2AX</h1>
+          <p>A python wrapper for the dynamixel SDK to work with the USB2AX interface </p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/jthorniley">jthorniley</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/jthorniley/pyusb2ax/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/jthorniley/pyusb2ax/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
         <h1>
 <a name="pyusb2ax" class="anchor" href="#pyusb2ax"><span class="octicon octicon-link"></span></a>PyUSB2AX</h1>
 
@@ -68,7 +75,7 @@ python setup.py install
 <li>Patches it to make it compatible with the USB2AX.
 
 <ul>
-<li>Specifically, that means turn the dxl_hal.c file into something more like Nicholas Saugnier's <a href="https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c">modified verision</a>. This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel with the SDK expects.</li>
+<li>Specifically, that means turn the dxl_hal.c file into something more like Nicholas Saugnier's <a href="https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c">modified verision</a>. This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel which the SDK expects.</li>
 <li>And makes modifications to allow passing the sync_read instruction through the API.</li>
 </ul>
 </li>
@@ -294,21 +301,15 @@ $ mv org.freedesktop.ModemManager.service org.freedesktop.ModemManager.service.d
 <p>Better documentation.</p>
 
 <p>Interface for setting angles in radians.</p>
-<hr>
-Author: <a href="http://www.jamesthorniley.com">James Thorniley</a>
 
+<h2>
+<a name="author" class="anchor" href="#author"><span class="octicon octicon-link"></span></a>Author</h2>
 
+<p><a href="http://www.jamesthorniley.com">James Thorniley</a></p>
       </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">PyUSB2AX maintained by <a href="https://github.com/jthorniley">jthorniley</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
     </div>
-
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -319,7 +320,6 @@ Author: <a href="http://www.jamesthorniley.com">James Thorniley</a>
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
-
 
   </body>
 </html>
