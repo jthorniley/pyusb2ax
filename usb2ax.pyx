@@ -1,6 +1,14 @@
 
 import sys
 
+ERRBIT_VOLTAGE		 = 1
+ERRBIT_ANGLE		 = 2
+ERRBIT_OVERHEAT		 = 4
+ERRBIT_RANGE		 = 8
+ERRBIT_CHECKSUM		 = 16
+ERRBIT_OVERLOAD		 = 32
+ERRBIT_INSTRUCTION	 = 64
+
 COMM_TXSUCCESS = 0
 COMM_RXSUCCESS = 1
 COMM_TXFAIL = 2
@@ -9,6 +17,8 @@ COMM_TXERROR = 4
 COMM_RXWAITING = 5
 COMM_RXTIMEOUT = 6
 COMM_RXCORRUPT = 7
+COMM_SYNC_READ_FAIL = 100
+
 MMAP={
     "model_no":[0x00,2,False],
     "firmware_version":[0x02,1,False],
@@ -61,6 +71,22 @@ cdef extern from "dynamixel.h":
     int dxl_read_word(int id, int address)
     void dxl_write_word(int id, int address, int value)
 
+cdef check_rx_error():
+    if dxl_get_rxpacket_error(ERRBIT_VOLTAGE):
+        print "Voltage error"
+    if dxl_get_rxpacket_error(ERRBIT_ANGLE ):
+        print "Angle error"
+    if dxl_get_rxpacket_error(ERRBIT_OVERHEAT):
+        print "Overheat error"
+    if dxl_get_rxpacket_error(ERRBIT_RANGE):
+        print "Range error"
+    if dxl_get_rxpacket_error(ERRBIT_CHECKSUM):
+        print "Checksum error"
+    if dxl_get_rxpacket_error(ERRBIT_OVERLOAD): 
+        print "Overload error"
+    if dxl_get_rxpacket_error(ERRBIT_INSTRUCTION): 
+        print "Instruction error"
+     
 
 class InitError(Exception):
     def __init__(self, device_id):
@@ -218,21 +244,36 @@ def sync_read(ids,parameter):
 
     dxl_set_txpacket_id(253)#USB2AX reserved ID
     dxl_set_txpacket_instruction(0x84) # Sync read
-    dxl_set_txpacket_length(n_servos+4)
     dxl_set_txpacket_parameter(0,info[0]) 
     dxl_set_txpacket_parameter(1,info[1])
 
     for i, id in enumerate(ids):
         dxl_set_txpacket_parameter(2+i,id)
 
+    dxl_set_txpacket_length(n_servos+4)
+
     dxl_txrx_packet()
     status = dxl_get_result()
     if ( status == COMM_RXSUCCESS):
+        check_rx_error()
         if info[1] == 2:
-            return [ dxl_makeword(dxl_get_rxpacket_parameter(2*i),
+            result = [ dxl_makeword(dxl_get_rxpacket_parameter(2*i),
                 dxl_get_rxpacket_parameter(2*i+1) ) for i in range(n_servos) ]
+            if 65535 in result:
+                raise ReadError(COMM_SYNC_READ_FAIL)
         else:
-            return [ dxl_get_rxpacket_parameter(i) for i in range(n_servos) ]
+            result = [ dxl_get_rxpacket_parameter(i) for i in range(n_servos) ]
+
+        return result
 
     else:
         raise ReadError(status)
+
+def reset(servo_id):
+    dxl_set_txpacket_id(servo_id)
+    dxl_set_txpacket_instruction(0x06) # Sync read
+    dxl_set_txpacket_length(2)
+    dxl_txrx_packet()
+    status = dxl_get_result()
+    print status
+
