@@ -98,6 +98,12 @@ as read-only.
 
 ## Troubleshooting
 
+### Baud rate
+
+Currently you can only use the 1Mhz baud rate setting. This is the default setting for most AX 12 servos. If yours is set to something else, you will need to change it via some other method by writing 1 to the control table addres 0x04.
+
+### Connection problems
+
 If you get this error message:
 
     usb2ax.InitError: There was a problem connecting to the USB2AX at /dev/ttyACM0
