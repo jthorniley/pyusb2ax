@@ -72,6 +72,8 @@ cdef extern from "dynamixel.h":
     int dxl_read_word(int id, int address)
     void dxl_write_word(int id, int address, int value)
 
+cdef int _global_sync_read_ok = 1
+
 cdef check_rx_error():
     if dxl_get_rxpacket_error(ERRBIT_VOLTAGE):
         print "Voltage error"
@@ -109,6 +111,16 @@ class UnknownParameterError(Exception):
 class InvalidWriteParameterError(Exception):
     pass
 
+class SyncReadError(Exception):
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        return """You tried to sync read but some of your devices
+are set to return too slowly. To fix this call initialize with
+fix_sync_read_delay = True.
+"""
+
 def reset_usb2ax(device_id=0):
     """
     Reset the usb2ax device.
@@ -123,7 +135,7 @@ def reset_usb2ax(device_id=0):
     print "Device reset, you should unplug it and plug it back in again"
 
 
-def initialize(device_id=0):
+def initialize(device_id=0, fix_sync_read_delay = False):
     """
     Connect to the USB2AX device.
 
@@ -139,18 +151,6 @@ def initialize(device_id=0):
     result = dxl_initialize(device_id,1)
     if result == 0:
         raise InitError(device_id)
-    connected_devices = []
-
-    for i in range(1,253):
-
-        dxl_ping( i );
-        if dxl_get_result( ) == COMM_RXSUCCESS:
-            connected_devices.append(str(i))
-
-    if len(connected_devices):
-        sys.stderr.write ("USB2AX: Found servo ids %s\n" % ", ".join(connected_devices) )
-    else:
-        sys.stderr.write ("USB2AX: WARNING: Cannot see any devices on the bus!\n" )
 
 
     try:
@@ -168,6 +168,27 @@ USB2AX: Success!
 """ % ( device_id, usb2ax_model_no, usb2ax_firmware_version ) )
     except ReadError, e:
         sys.stderr.write( """USB2AX: Could not read model and firmare information, this could be a problem...\n""" )
+
+    connected_devices = []
+
+    for i in range(1,253):
+
+        dxl_ping( i );
+        if dxl_get_result( ) == COMM_RXSUCCESS:
+            connected_devices.append(i)
+
+    if len(connected_devices):
+        sys.stderr.write ("USB2AX: Found servo ids %s\n" % connected_devices )
+        for i in connected_devices:
+            delay = read(i,"return_delay_time")
+            if delay > 20:
+                if fix_sync_read_delay:
+                    write(i,"return_delay_time",20)
+                else:
+                    _global_sync_read_ok = 0
+    else:
+        sys.stderr.write ("USB2AX: WARNING: Cannot see any devices on the bus!\n" )
+
 
   
 def terminate():
@@ -269,6 +290,8 @@ def sync_write(ids,parameter,values):
     status = dxl_get_result()
 
 def sync_read(ids,parameter):
+    if _global_sync_read_ok == 0:
+        raise SyncReadError()
 
     if parameter not in MMAP.keys():
         print "Could not write unknown parameter %s" % parameter
@@ -280,31 +303,28 @@ def sync_read(ids,parameter):
 
     sync_read_complete = False
 
-    while not sync_read_complete:
-        dxl_set_txpacket_id(253)#USB2AX reserved ID
-        dxl_set_txpacket_instruction(0x84) # Sync read
-        dxl_set_txpacket_length(n_servos+4)
+    dxl_set_txpacket_id(253)#USB2AX reserved ID
+    dxl_set_txpacket_instruction(0x84) # Sync read
+    dxl_set_txpacket_length(n_servos+4)
 
-        dxl_set_txpacket_parameter(0,info[0]) 
-        dxl_set_txpacket_parameter(1,info[1])
+    dxl_set_txpacket_parameter(0,info[0]) 
+    dxl_set_txpacket_parameter(1,info[1])
 
-        for i, id in enumerate(ids):
-            dxl_set_txpacket_parameter(2+i,id)
+    for i, id in enumerate(ids):
+        dxl_set_txpacket_parameter(2+i,id)
 
-        dxl_txrx_packet()
-        status = dxl_get_result()
-        if status == COMM_RXSUCCESS:
-            check_rx_error()
-            if info[1] == 2:
-                result = [ dxl_makeword(dxl_get_rxpacket_parameter(2*i),
-                    dxl_get_rxpacket_parameter(2*i+1) ) for i in range(n_servos) ]
-                if 65535 not in result:
-                    sync_read_complete = True
-            else:
-                result = [ dxl_get_rxpacket_parameter(i) for i in range(n_servos) ]
-                sync_read_complete = True
+    dxl_txrx_packet()
+    status = dxl_get_result()
+    if status == COMM_RXSUCCESS:
+        check_rx_error()
+        if info[1] == 2:
+            result = [ dxl_makeword(dxl_get_rxpacket_parameter(2*i),
+                dxl_get_rxpacket_parameter(2*i+1) ) for i in range(n_servos) ]
         else:
-            raise ReadError(status)
+            result = [ dxl_get_rxpacket_parameter(i) for i in range(n_servos) ]
+    else:
+        raise ReadError(status)
+
     return result
 
 def reset(servo_id):

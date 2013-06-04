@@ -13,9 +13,10 @@ E.g. python example.py 1 2 will move servos
 servo_list = [int(x) for x in sys.argv[1:]]
 
 try:
-    usb2ax.initialize()
+    usb2ax.initialize(fix_sync_read_delay = True)
 
     print "Servo: \t" + "\t".join( sys.argv[1:] ) + "\tRead freq (Hz)"
+
 
     buflen = 1000
     freq_buffer = [0.0] * buflen
