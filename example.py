@@ -48,8 +48,8 @@ try:
             i += 1
             i = i % buflen
 
-            pos_string = "\t".join(["%s" % x for x in pos_data])
-            sys.stdout.write("\r\t%s\t%.2f" % (pos_string, mean_freq) )
+            pos_string = "".join(["{:<8d}".format(x) for x in pos_data])
+            sys.stdout.write("\r\t{}{:<8.2f}".format(pos_string, mean_freq) )
             sys.stdout.flush()
 
 
