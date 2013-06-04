@@ -15,7 +15,7 @@ servo_list = [int(x) for x in sys.argv[1:]]
 try:
     usb2ax.initialize(fix_sync_read_delay = True)
 
-    print "Servo: \t" + "\t".join( sys.argv[1:] ) + "\tRead freq (Hz)"
+    print "Servo: \t" + "\t".join( sys.argv[1:] ) + "\tRead rate (Hz)\tNumber of errors"
 
 
     buflen = 1000
@@ -38,7 +38,6 @@ try:
                     pos_data = usb2ax.sync_read(servo_list,"present_position")
                     done = True
                 except usb2ax.ReadError, e:
-                    #print "Read error"
                     n_read_errors += 1
             t1 = time.time()
             freq = 1.0/(t1-t0)
@@ -49,13 +48,12 @@ try:
             i = i % buflen
 
             pos_string = "".join(["{:<8d}".format(x) for x in pos_data])
-            sys.stdout.write("\r\t{}{:<8.2f}".format(pos_string, mean_freq) )
+            sys.stdout.write("\r\t{}{:<8.2f}\t{:<8d}".format(pos_string, mean_freq, n_read_errors) )
             sys.stdout.flush()
 
 
     except KeyboardInterrupt, e:
-        print ""
-        print "Number of read errors: %d" % n_read_errors
+        pass
 finally:
     usb2ax.terminate()
 
