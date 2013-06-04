@@ -50,7 +50,7 @@ print usb2ax.read(1,"present_position") # Prints the actual position reported by
 
 Note that sync read/write should generally be faster.
 
-See the file example.py for another usage of this.
+See the file [example.py](https://github.com/jthorniley/pyusb2ax/blob/master/example.py) for another usage of this.
 
 ```python    
 import usb2ax
