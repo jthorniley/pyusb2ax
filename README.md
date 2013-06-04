@@ -36,15 +36,15 @@ This does the following:
 ## Example
 
 ### Serial read/write
+```python
+import usb2ax
 
-    import usb2ax
-    
-    usb2ax.initialize(0) # Expects to see the USB2AX at /dev/ttyACM0
-    
-    usb2ax.write(1,"goal_position",512) # Move the servo with ID 1 to position 512
-                                        # (valid values are 0-1024, 512 is in the middle)
-                                        
-    print usb2ax.read(1,"present_position") # Prints the actual position reported by the dynamixel.
+usb2ax.initialize(0) # Expects to see the USB2AX at /dev/ttyACM0
+usb2ax.write(1,"goal_position",512) # Move the servo with ID 1 to position 512
+                                    # (valid values are 0-1024, 512 is in the middle)
+
+print usb2ax.read(1,"present_position") # Prints the actual position reported by the dynamixel.
+```
 
 ### Sync read/write
 
@@ -52,14 +52,16 @@ Note that sync read/write should generally be faster.
 
 See the file example.py for another usage of this.
 
-    import usb2ax
+```python    
+import usb2ax
 
-    usb2ax.initialize(0)
+usb2ax.initialize(0)
 
-    usb2ax.sync_write([1,2],"goal_position",[600,400]) # Move servo 1 to 600 and servo 2 to 400
-    data = usb2ax.sync_read([1,2],"present_position") # Sync read
-    print data[0] # Position of servo 1
-    print data[1] # Position of servo 2
+usb2ax.sync_write([1,2],"goal_position",[600,400]) # Move servo 1 to 600 and servo 2 to 400
+data = usb2ax.sync_read([1,2],"present_position") # Sync read
+print data[0] # Position of servo 1
+print data[1] # Position of servo 2
+```
 
 ## Available commands
 
