@@ -104,6 +104,16 @@ as read-only.
 
 Currently you can only use the 1Mhz baud rate setting. This is the default setting for most AX 12 servos. If yours is set to something else, you will need to change it via some other method by writing 1 to the control table address 0x04.
 
+### Hardware checks
+
+Make sure that
+
+* The USB2AX is plugged into the USB port.
+* There should be a green LED lit up on the USB2AX
+* You have properly connected all the 3-wire serial connections.
+* You have properly connected the power to the dynamixels.
+ * When you plug the power in, a red LED on the back of the servo should light up briefly.
+
 ### Connection problems
 
 If you get this error message:
