@@ -46,7 +46,7 @@
 <p><em>N.B. This is a python module that wraps a Linux C library - it will not help you access Dynamixels from other operating systems.</em></p>
 
 <p>This is a build script and simple python module that allows you to easily control Dynamixel AX-12 servos (and possibly other models) using a 
-<a href="http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax">USB2AX</a>. It wraps the standard dynamixel C library 
+Xevelabs <a href="http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax">USB2AX</a>. It wraps the standard dynamixel C library 
 available <a href="http://support.robotis.com/en/software/dynamixel_sdk/usb2dynamixel/usb2dxl_linux.htm">here</a> after applying 
 a patch to make it compatible with the USB2AX.</p>
 
@@ -58,7 +58,7 @@ command that the USB2AX provides for faster reads from multiple servos.</p>
 <h2>
 <a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
-<p>Python 2.7 and Cython.</p>
+<p>Python 2.7 and Cython. You will also need the relevant hardware: one or more <a href="http://www.robotis.com/xe/dynamixel_en">Dynamixel AX-12</a> type servos, the excellent and tiny <a href="http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax">USB2AX</a> interface device created by Xevelabs, and some way to power them, e.g. a separate battery or the <a href="http://www.trossenrobotics.com/store/p/5886-SMPS2Dynamixel-Adapter.aspx">SMPS2Dynamixel</a> adapter. Refer to the Dynamixel <a href="http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm">manual</a> or the USB2AX website for further help with setting up the hardware.</p>
 
 <h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
@@ -258,6 +258,8 @@ like</p>
 [ 9216.993668] usb 3-3.3: ep 0x82 - rounding interval to 1024 microframes, ep desc says 2040 microframes
 [ 9216.994410] cdc_acm 3-3.3:1.0: ttyACM0: USB ACM device
 </code></pre>
+
+<p>If it hasn't connected, try the USB2AX <a href="http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax">website</a> for some help.</p>
 
 <p>Note the name <tt>ttyACM0</tt> -- if you get something else like <tt>ttyACM1</tt> then
 you need to call <tt>usb2ax.initialize(1)</tt>.</p>
