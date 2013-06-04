@@ -32,7 +32,6 @@ try:
             pos = int(512+pos)
             usb2ax.sync_write(servo_list,"goal_position",[pos]*len(servo_list))
 
-            #pos_data = [usb2ax.read(1,"present_position")]
             done = False
             while not done:
                 try:
