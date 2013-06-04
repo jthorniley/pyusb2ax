@@ -27,7 +27,7 @@ while True:
     pos = int(512+pos)
     usb2ax.sync_write(servo_list,"goal_position",[pos]*len(servo_list))
 
-    pos_data = usb2ax.sync_read(servo_list,"goal_position")
+    pos_data = usb2ax.sync_read(servo_list,"present_position")
 
     t1 = time.time()
     freq = 1.0/(t1-t0)
