@@ -1,5 +1,6 @@
 
 import sys
+from time import sleep
 
 ERRBIT_VOLTAGE		 = 1
 ERRBIT_ANGLE		 = 2
@@ -108,6 +109,19 @@ class UnknownParameterError(Exception):
 class InvalidWriteParameterError(Exception):
     pass
 
+def reset_usb2ax(device_id=0):
+    """
+    Reset the usb2ax device.
+    """
+
+    result = dxl_initialize(device_id,1)
+    if result == 0:
+        raise InitError(device_id)
+
+    reset(0xfd)
+
+    print "Device reset, you should unplug it and plug it back in again"
+
 
 def initialize(device_id=0):
     """
@@ -125,18 +139,40 @@ def initialize(device_id=0):
     result = dxl_initialize(device_id,1)
     if result == 0:
         raise InitError(device_id)
+    connected_devices = []
 
-    usb2ax_model_no = _read(0xFD, 0x00, 2)
-    usb2ax_firmware_version = _read(0xFD, 0x02, 1)
+    for i in range(1,253):
 
-    sys.stderr.write( """
+        dxl_ping( i );
+        if dxl_get_result( ) == COMM_RXSUCCESS:
+            connected_devices.append(str(i))
+
+    if len(connected_devices):
+        sys.stderr.write ("USB2AX: Found servo ids %s\n" % ", ".join(connected_devices) )
+    else:
+        sys.stderr.write ("USB2AX: WARNING: Cannot see any devices on the bus!\n" )
+
+
+    try:
+        sleep(0.01)
+        usb2ax_model_no = _read(0xFD, 0x00, 2)
+        sleep(0.01)
+        usb2ax_firmware_version = _read(0xFD, 0x02, 1)
+
+        sys.stderr.write( """
 USB2AX: Init
 USB2AX: Device          : /dev/ttyACM%d
 USB2AX: Model no.       : %d
 USB2AX: Firmware version: %d
 USB2AX: Success!
 """ % ( device_id, usb2ax_model_no, usb2ax_firmware_version ) )
+    except ReadError, e:
+        sys.stderr.write( """USB2AX: Could not read model and firmare information, this could be a problem...\n""" )
+
   
+def terminate():
+    dxl_terminate()
+
 def write(servo_id,parameter,value):
     """
     Write to a servos control memory.
@@ -242,32 +278,34 @@ def sync_read(ids,parameter):
 
     n_servos = len(ids)
 
-    dxl_set_txpacket_id(253)#USB2AX reserved ID
-    dxl_set_txpacket_instruction(0x84) # Sync read
-    dxl_set_txpacket_parameter(0,info[0]) 
-    dxl_set_txpacket_parameter(1,info[1])
+    sync_read_complete = False
 
-    for i, id in enumerate(ids):
-        dxl_set_txpacket_parameter(2+i,id)
+    while not sync_read_complete:
+        dxl_set_txpacket_id(253)#USB2AX reserved ID
+        dxl_set_txpacket_instruction(0x84) # Sync read
+        dxl_set_txpacket_length(n_servos+4)
 
-    dxl_set_txpacket_length(n_servos+4)
+        dxl_set_txpacket_parameter(0,info[0]) 
+        dxl_set_txpacket_parameter(1,info[1])
 
-    dxl_txrx_packet()
-    status = dxl_get_result()
-    if ( status == COMM_RXSUCCESS):
-        check_rx_error()
-        if info[1] == 2:
-            result = [ dxl_makeword(dxl_get_rxpacket_parameter(2*i),
-                dxl_get_rxpacket_parameter(2*i+1) ) for i in range(n_servos) ]
-            if 65535 in result:
-                raise ReadError(COMM_SYNC_READ_FAIL)
+        for i, id in enumerate(ids):
+            dxl_set_txpacket_parameter(2+i,id)
+
+        dxl_txrx_packet()
+        status = dxl_get_result()
+        if status == COMM_RXSUCCESS:
+            check_rx_error()
+            if info[1] == 2:
+                result = [ dxl_makeword(dxl_get_rxpacket_parameter(2*i),
+                    dxl_get_rxpacket_parameter(2*i+1) ) for i in range(n_servos) ]
+                if 65535 not in result:
+                    sync_read_complete = True
+            else:
+                result = [ dxl_get_rxpacket_parameter(i) for i in range(n_servos) ]
+                sync_read_complete = True
         else:
-            result = [ dxl_get_rxpacket_parameter(i) for i in range(n_servos) ]
-
-        return result
-
-    else:
-        raise ReadError(status)
+            raise ReadError(status)
+    return result
 
 def reset(servo_id):
     dxl_set_txpacket_id(servo_id)
@@ -275,5 +313,4 @@ def reset(servo_id):
     dxl_set_txpacket_length(2)
     dxl_txrx_packet()
     status = dxl_get_result()
-    print status
 

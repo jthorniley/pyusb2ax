@@ -12,43 +12,50 @@ E.g. python example.py 1 2 will move servos
 
 servo_list = [int(x) for x in sys.argv[1:]]
 
-usb2ax.initialize()
-
-print "Servo: \t" + "\t".join( sys.argv[1:] ) + "\tRead freq (Hz)"
-
-t0 = time.time()
-
-buflen = 500
-freq_buffer = [0.0] * buflen
-i = 0
-
-pos_data = [0]*len(servo_list)
-n_read_errors = 0
 try:
-    while True:
-        pos = math.sin(t0*math.pi)*50.0 
-        pos = int(512+pos)
-        usb2ax.sync_write(servo_list,"goal_position",[pos]*len(servo_list))
+    usb2ax.initialize()
 
-        #pos_data = [usb2ax.read(1,"present_position")]
-        try:
-            pos_data = usb2ax.sync_read(servo_list,"present_position")
-        except usb2ax.ReadError, e:
-            #print "Read error"
-            n_read_errors += 1
+    print "Servo: \t" + "\t".join( sys.argv[1:] ) + "\tRead freq (Hz)"
 
-        t1 = time.time()
-        freq = 1.0/(t1-t0)
-        t0 = t1
-        freq_buffer[i] = freq
-        mean_freq = sum(freq_buffer)/float(buflen)
-        i += 1
-        i = i % buflen
+    buflen = 1000
+    freq_buffer = [0.0] * buflen
+    i = 0
 
-        pos_string = "\t".join(["%s" % x for x in pos_data])
-        sys.stdout.write("\r\t%s\t%.2f" % (pos_string, mean_freq) )
-        sys.stdout.flush()
+    pos_data = [0]*len(servo_list)
+    n_read_errors = 0
+    try:
 
-except KeyboardInterrupt, e:
-    print ""
-    print "Number of read errors: %d" % n_read_errors
+        t0 = time.time()
+        while True:
+            pos = math.sin(t0*math.pi)*50.0 
+            pos = int(512+pos)
+            usb2ax.sync_write(servo_list,"goal_position",[pos]*len(servo_list))
+
+            #pos_data = [usb2ax.read(1,"present_position")]
+            done = False
+            while not done:
+                try:
+                    pos_data = usb2ax.sync_read(servo_list,"present_position")
+                    done = True
+                except usb2ax.ReadError, e:
+                    #print "Read error"
+                    n_read_errors += 1
+            t1 = time.time()
+            freq = 1.0/(t1-t0)
+            t0 = t1
+            freq_buffer[i] = freq
+            mean_freq = sum(freq_buffer)/float(buflen)
+            i += 1
+            i = i % buflen
+
+            pos_string = "\t".join(["%s" % x for x in pos_data])
+            sys.stdout.write("\r\t%s\t%.2f" % (pos_string, mean_freq) )
+            sys.stdout.flush()
+
+
+    except KeyboardInterrupt, e:
+        print ""
+        print "Number of read errors: %d" % n_read_errors
+finally:
+    usb2ax.terminate()
+
