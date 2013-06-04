@@ -4,7 +4,15 @@ A simple wrapper to access Dynamixel AX servos using the USB2AX interface under 
 
 _N.B. This is a python module that wraps a Linux C library - it will not help you access Dynamixels from other operating systems._
 
-This is a build script and simple python module that allows you to easily control Dynamixel AX-12 servos (and possibly other models) using a [USB2AX](http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax). It wraps the standard dynamixel C library available [here](http://support.robotis.com/en/software/dynamixel_sdk/usb2dynamixel/usb2dxl_linux.htm) after applying a patch to make it compatible with the USB2AX.
+This is a build script and simple python module that allows you to easily control Dynamixel AX-12 servos (and possibly other models) using a 
+[USB2AX](http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax). It wraps the standard dynamixel C library 
+available [here](http://support.robotis.com/en/software/dynamixel_sdk/usb2dynamixel/usb2dxl_linux.htm) after applying 
+a patch to make it compatible with the USB2AX.
+
+A particular advantage of this is that in addition to the funtionality you would expect this library
+also supports the SYNC_READ 
+[SYNC_READ](http://www.xevelabs.com/doku.php?id=product:usb2ax:advanced_instructions) 
+command that the USB2AX provides for faster reads from multiple servos.
 
 ## Requirements
 
@@ -21,10 +29,13 @@ This does the following:
 * Downloads the Dynamixel SDK
 * Patches it to make it compatible with the USB2AX.
  * Specifically, that means turn the dxl_hal.c file into something more like Nicholas Saugnier's [modified verision](https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c). This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel with the SDK expects.
+ * And makes modifications to allow passing the sync_read instruction through the API.
 * Creates a module called <tt>usb2ax</tt> which provides easy access to the dynamixel library from Python via the
   methods illustrated below.
 
 ## Example
+
+### Serial read/write
 
     import usb2ax
     
@@ -34,6 +45,21 @@ This does the following:
                                         # (valid values are 0-1024, 512 is in the middle)
                                         
     print usb2ax.read(1,"present_position") # Prints the actual position reported by the dynamixel.
+
+### Sync read/write
+
+Note that sync read/write should generally be faster.
+
+See the file example.py for another usage of this.
+
+    import usb2ax
+
+    usb2ax.initialize(0)
+
+    usb2ax.sync_write([1,2],"goal_position",[600,400]) # Move servo 1 to 600 and servo 2 to 400
+    data = usb2ax.sync_read([1,2],"present_position") # Sync read
+    print data[0] # Position of servo 1
+    print data[1] # Position of servo 2
 
 ## Available commands
 
@@ -70,12 +96,59 @@ as read-only.
 <tr><td>punch</td><td>0x30</td><td>R/W</td></tr>
 </table>
 
+## Troubleshooting
+
+If you get this error message:
+
+    usb2ax.InitError: There was a problem connecting to the USB2AX at /dev/ttyACM0
+
+Try first running dmesg to check that the USB2AX is connecting correctly, you should see something
+like
+
+    [ 9216.979357] usb 3-3.3: new full-speed USB device number 21 using xhci_hcd
+    [ 9216.992828] usb 3-3.3: New USB device found, idVendor=16d0, idProduct=06a7
+    [ 9216.992839] usb 3-3.3: New USB device strings: Mfr=1, Product=2, SerialNumber=220
+    [ 9216.992845] usb 3-3.3: Product: USB2AX
+    [ 9216.992849] usb 3-3.3: Manufacturer: Xevelabs
+    [ 9216.992853] usb 3-3.3: SerialNumber: 6403635373035121E161
+    [ 9216.993668] usb 3-3.3: ep 0x82 - rounding interval to 1024 microframes, ep desc says 2040 microframes
+    [ 9216.994410] cdc_acm 3-3.3:1.0: ttyACM0: USB ACM device
+
+Note the name <tt>ttyACM0</tt> -- if you get something else like <tt>ttyACM1</tt> then
+you need to call <tt>usb2ax.initilialize(1)</tt>.
+
+Check the permissions on the device. You will probably see something like this:
+
+    $ ls -lh /dev/ttyACM0 
+    crw-rw----. 1 root dialout 166, 0 Jun  4 11:55 /dev/ttyACM0
+
+Note the group name <tt>dialout</tt>. Check your user's current groups with <tt>groups</tt>.
+You may need to add your user to the dialout group:
+
+    $ usermod -a -G dialout <your_username>
+
+The group change only takes effect when you login. So either logout then in again, or if you are in
+a terminal you can do <tt>su - your_username</tt> to get a new login session.
+
+Finally, if you have modem-manager running (which might be the case on complete desktop
+Linux installs, probably less likely to be a problem on Raspberry Pi etc), it
+may lock access to the serial port. Try
+<tt>sudo killall modem-manager</tt>. If that works, you may be able to get rid of it permanently by doing
+
+    $ cd /usr/share/dbus-1/system-services
+    $ mv org.freedesktop.ModemManager.service org.freedesktop.ModemManager.service.disabled
+
+If you still have problems, check if anything else is locking the serial port with
+
+    $ sudo lsof | grep ACM
+
+The output of this should ideally be nothing. If it isn't, try and get rid of whatever is there.
+
 ## TODO
 
-Support all the functions.
+Support all the parameter settings.
 
 Better documentation.
 
 Interface for setting angles in radians.
 
-Support for the [SYNC_READ](http://www.xevelabs.com/doku.php?id=product:usb2ax:advanced_instructions) command.

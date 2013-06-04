@@ -8,10 +8,23 @@ import os.path
 import tempfile
 import zipfile
 
-patch = """diff -U 3 a/dxl_hal.c b/dxl_hal.c
---- a/dxl_hal.c	2013-06-03 17:40:45.405693506 +0100
-+++ b/dxl_hal.c	2013-06-03 17:41:00.285834108 +0100
-@@ -19,10 +19,9 @@
+patch = """diff DXL_SDK_LINUX_v1_01/include/dynamixel.h DXL_SDK_LINUX_v1_01/include/dynamixel.h
+index 8a8ed70..270cfc6 100644
+--- DXL_SDK_LINUX_v1_01/include/dynamixel.h
++++ DXL_SDK_LINUX_v1_01/include/dynamixel.h
+@@ -26,6 +26,7 @@ void dxl_set_txpacket_instruction(int instruction);
+ #define INST_ACTION			(5)\r
+ #define INST_RESET			(6)\r
+ #define INST_SYNC_WRITE		(131)\r
++#define INST_SYNC_READ		(132)\r
+ \r
+ void dxl_set_txpacket_parameter(int index, int value);\r
+ void dxl_set_txpacket_length(int length);\r
+diff DXL_SDK_LINUX_v1_01/src/dxl_hal.c DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+index d78c468..26b3e08 100644
+--- DXL_SDK_LINUX_v1_01/src/dxl_hal.c
++++ DXL_SDK_LINUX_v1_01/src/dxl_hal.c
+@@ -19,10 +19,9 @@ char	gDeviceName[20];
  int dxl_hal_open(int deviceIndex, float baudrate)
  {
  	struct termios newtio;
@@ -23,7 +36,7 @@ patch = """diff -U 3 a/dxl_hal.c b/dxl_hal.c
  
  	strcpy(gDeviceName, dev_name);
  	memset(&newtio, 0, sizeof(newtio));
-@@ -33,7 +32,7 @@
+@@ -33,7 +32,7 @@ int dxl_hal_open(int deviceIndex, float baudrate)
  		goto DXL_HAL_OPEN_ERROR;
  	}
  
@@ -32,7 +45,7 @@ patch = """diff -U 3 a/dxl_hal.c b/dxl_hal.c
  	newtio.c_iflag		= IGNPAR;
  	newtio.c_oflag		= 0;
  	newtio.c_lflag		= 0;
-@@ -46,20 +45,6 @@
+@@ -46,20 +45,6 @@ int dxl_hal_open(int deviceIndex, float baudrate)
  	if(gSocket_fd == -1)
  		return 0;
  	
@@ -53,7 +66,7 @@ patch = """diff -U 3 a/dxl_hal.c b/dxl_hal.c
  	dxl_hal_close();
  	
  	gfByteTransTime = (float)((1000.0f / baudrate) * 12.0f);
-@@ -73,7 +58,7 @@
+@@ -73,7 +58,7 @@ int dxl_hal_open(int deviceIndex, float baudrate)
  		goto DXL_HAL_OPEN_ERROR;
  	}
  
@@ -62,7 +75,7 @@ patch = """diff -U 3 a/dxl_hal.c b/dxl_hal.c
  	newtio.c_iflag		= IGNPAR;
  	newtio.c_oflag		= 0;
  	newtio.c_lflag		= 0;
-@@ -99,25 +84,10 @@
+@@ -99,25 +84,10 @@ void dxl_hal_close()
  
  int dxl_hal_set_baud( float baudrate )
  {
@@ -87,11 +100,36 @@ patch = """diff -U 3 a/dxl_hal.c b/dxl_hal.c
 -	
  	//dxl_hal_close();
  	//dxl_hal_open(gDeviceName, baudrate);
+ 	
+diff DXL_SDK_LINUX_v1_01/src/dynamixel.c DXL_SDK_LINUX_v1_01/src/dynamixel.c
+index 3800c18..d292caf 100644
+--- DXL_SDK_LINUX_v1_01/src/dynamixel.c
++++ DXL_SDK_LINUX_v1_01/src/dynamixel.c
+@@ -58,7 +58,8 @@ void dxl_tx_packet(void)
+ 		&& gbInstructionPacket[INSTRUCTION] != INST_REG_WRITE
+ 		&& gbInstructionPacket[INSTRUCTION] != INST_ACTION
+ 		&& gbInstructionPacket[INSTRUCTION] != INST_RESET
+-		&& gbInstructionPacket[INSTRUCTION] != INST_SYNC_WRITE )
++		&& gbInstructionPacket[INSTRUCTION] != INST_SYNC_WRITE 
++    && gbInstructionPacket[INSTRUCTION] != INST_SYNC_READ )
+ 	{
+ 		gbCommStatus = COMM_TXERROR;
+ 		giBusUsing = 0;
+@@ -84,7 +85,8 @@ void dxl_tx_packet(void)
+ 		return;
+ 	}
+ 
+-	if( gbInstructionPacket[INSTRUCTION] == INST_READ )
++	if( gbInstructionPacket[INSTRUCTION] == INST_READ ||
++          gbInstructionPacket[INSTRUCTION] == INST_SYNC_READ )
+ 		dxl_hal_set_timeout( gbInstructionPacket[PARAMETER+1] + 6 );
+ 	else
+ 		dxl_hal_set_timeout( 6 );
 """
  	
 def patch_dxl_sdk():
 
-    sp = subprocess.Popen(["patch","-N","-r","-","DXL_SDK_LINUX_v1_01/src/dxl_hal.c"],stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    sp = subprocess.Popen(["patch","-N","-r","-","-p0"],stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     print sp.communicate(input=patch)[0]
 
 def download_dxl_sdk():

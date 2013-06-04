@@ -71,6 +71,9 @@ class ReadError(Exception):
     def __init__(self,error_id):
         self.error_id = error_id
 
+    def __str__(self):
+        return str(self.error_id)
+
 class UnknownParameterError(Exception):
     pass
 
@@ -111,12 +114,12 @@ def write(servo_id,parameter,value):
 
     if parameter not in MMAP.keys():
         print "Could not write unknown parameter %s" % parameter
-        raise UnknownParameterError
+        raise UnknownParameterError()
 
     info = MMAP[parameter]
     if not info[2]:
         print "Parameter %s not writable" % parameter
-        raise InvalidWriteParameterError
+        raise InvalidWriteParameterError()
 
     func = dxl_write_byte
     if info[1] == 2:
@@ -136,7 +139,7 @@ def read(servo_id,parameter):
     """
     if parameter not in MMAP.keys():
         print "Could not write unknown parameter %s" % parameter
-        raise UnknownParameterError
+        raise UnknownParameterError()
 
     info = MMAP[parameter]
 
@@ -152,3 +155,66 @@ def read(servo_id,parameter):
         raise ReadError(status)
 
 
+def sync_write(ids,parameter,values):
+
+    if parameter not in MMAP.keys():
+        print "Could not write unknown parameter %s" % parameter
+        raise UnknownParameterError()
+
+    info = MMAP[parameter]
+    if not info[2]:
+        print "Parameter %s not writable" % parameter
+        raise InvalidWriteParameterError()
+
+    dxl_set_txpacket_id(254)#Broadcast
+    dxl_set_txpacket_instruction(0x83) # Sync write
+
+    param_len = 1 + info[1]
+
+    dxl_set_txpacket_length(param_len*len(ids)+4)
+
+    dxl_set_txpacket_parameter(0,info[0]) 
+    dxl_set_txpacket_parameter(1,info[1])
+
+    for i, id in enumerate(ids):
+        dxl_set_txpacket_parameter(2+param_len*i,id)
+        if info[1] == 2:
+            dxl_set_txpacket_parameter(2+param_len*i+1,dxl_get_lowbyte(values[i]))
+            dxl_set_txpacket_parameter(2+param_len*i+2,dxl_get_highbyte(values[i]))
+        else:
+            #Single byte parameter
+            dxl_set_txpacket_parameter(2+param_len*i+1,values[i])
+
+    dxl_txrx_packet()
+    status = dxl_get_result()
+
+def sync_read(ids,parameter):
+
+    if parameter not in MMAP.keys():
+        print "Could not write unknown parameter %s" % parameter
+        raise UnknownParameterError()
+
+    info = MMAP[parameter]
+
+    n_servos = len(ids)
+
+    dxl_set_txpacket_id(253)#USB2AX reserved ID
+    dxl_set_txpacket_instruction(0x84) # Sync read
+    dxl_set_txpacket_length(n_servos+4)
+    dxl_set_txpacket_parameter(0,info[0]) 
+    dxl_set_txpacket_parameter(1,info[1])
+
+    for i, id in enumerate(ids):
+        dxl_set_txpacket_parameter(2+i,id)
+
+    dxl_txrx_packet()
+    status = dxl_get_result()
+    if ( status == COMM_RXSUCCESS):
+        if info[1] == 2:
+            return [ dxl_makeword(dxl_get_rxpacket_parameter(2*i),
+                dxl_get_rxpacket_parameter(2*i+1) ) for i in range(n_servos) ]
+        else:
+            return [ dxl_get_rxpacket_parameter(i) for i in range(n_servos) ]
+
+    else:
+        raise ReadError(status)
