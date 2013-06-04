@@ -28,7 +28,7 @@ This does the following:
 
 * Downloads the Dynamixel SDK
 * Patches it to make it compatible with the USB2AX.
- * Specifically, that means turn the dxl_hal.c file into something more like Nicholas Saugnier's [modified verision](https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c). This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel with the SDK expects.
+ * Specifically, that means turn the dxl_hal.c file into something more like Nicholas Saugnier's [modified verision](https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c). This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel which the SDK expects.
  * And makes modifications to allow passing the sync_read instruction through the API.
 * Creates a module called <tt>usb2ax</tt> which provides easy access to the dynamixel library from Python via the
   methods illustrated below.
