@@ -115,7 +115,7 @@ like
     [ 9216.994410] cdc_acm 3-3.3:1.0: ttyACM0: USB ACM device
 
 Note the name <tt>ttyACM0</tt> -- if you get something else like <tt>ttyACM1</tt> then
-you need to call <tt>usb2ax.initilialize(1)</tt>.
+you need to call <tt>usb2ax.initialize(1)</tt>.
 
 Check the permissions on the device. You will probably see something like this:
 
