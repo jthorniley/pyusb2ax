@@ -1,4 +1,6 @@
 
+import sys
+
 COMM_TXSUCCESS = 0
 COMM_RXSUCCESS = 1
 COMM_TXFAIL = 2
@@ -97,6 +99,17 @@ def initialize(device_id=0):
     result = dxl_initialize(device_id,1)
     if result == 0:
         raise InitError(device_id)
+
+    usb2ax_model_no = _read(0xFD, 0x00, 2)
+    usb2ax_firmware_version = _read(0xFD, 0x02, 1)
+
+    sys.stderr.write( """
+USB2AX: Init
+USB2AX: Device          : /dev/ttyACM%d
+USB2AX: Model no.       : %d
+USB2AX: Firmware version: %d
+USB2AX: Success!
+""" % ( device_id, usb2ax_model_no, usb2ax_firmware_version ) )
   
 def write(servo_id,parameter,value):
     """
@@ -128,6 +141,21 @@ def write(servo_id,parameter,value):
     func(servo_id,info[0],value)
     return
 
+cdef _read(int servo_id, int address, int length):
+
+    cdef int result
+    cdef int status
+
+    func = dxl_read_byte
+    if length == 2:
+        func = dxl_read_word
+
+    result = func(servo_id, address )
+    status = dxl_get_result()
+    if ( status == 1):
+        return result
+    else:
+        raise ReadError(status)
 
 def read(servo_id,parameter):
     """
@@ -142,17 +170,7 @@ def read(servo_id,parameter):
         raise UnknownParameterError()
 
     info = MMAP[parameter]
-
-    func = dxl_read_byte
-    if info[1] == 2:
-        func = dxl_read_word
-
-    result = func(servo_id, info[0])
-    status = dxl_get_result()
-    if ( status == COMM_RXSUCCESS):
-        return result
-    else:
-        raise ReadError(status)
+    return _read( servo_id, info[0], info[1] )
 
 
 def sync_write(ids,parameter,values):

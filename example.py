@@ -12,9 +12,9 @@ E.g. python example.py 1 2 will move servos
 
 servo_list = [int(x) for x in sys.argv[1:]]
 
-print "Servo: \t" + "\t".join( sys.argv[1:] ) + "\tRead freq (Hz)"
-
 usb2ax.initialize()
+
+print "Servo: \t" + "\t".join( sys.argv[1:] ) + "\tRead freq (Hz)"
 
 t0 = time.time()
 
