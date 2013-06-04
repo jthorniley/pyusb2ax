@@ -10,7 +10,7 @@ available [here](http://support.robotis.com/en/software/dynamixel_sdk/usb2dynami
 a patch to make it compatible with the USB2AX.
 
 A particular advantage of this is that in addition to the funtionality you would expect this library
-also supports the SYNC_READ 
+also supports the 
 [SYNC_READ](http://www.xevelabs.com/doku.php?id=product:usb2ax:advanced_instructions) 
 command that the USB2AX provides for faster reads from multiple servos.
 
