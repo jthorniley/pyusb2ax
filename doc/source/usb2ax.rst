@@ -11,9 +11,11 @@ API reference for usb2ax
     Where the device is located. E.g.
     the default (0) represents /dev/ttyACM0
   :type device_id: integer
-  :param fix_sync_read_delay: If true, we will ensure at startup
+  :param fix_sync_read_delay: If True, automatically ensures
     that all connected dynamixels are configured correctly for
-    using the sync_read command.
+    using :py:func:`sync_read`. If this is False and :py:func:`sync_read`
+    is called on a servo which is badly configured, an exception may
+    be raised.
   :type fix_sync_read_delay: boolean
 
 .. py:function:: write( servo_id, parameter, value )
@@ -25,11 +27,11 @@ API reference for usb2ax
 
   >>> usb2ax.write( 1, "goal_position", 512 ) 
 
-  :param servo_id: The bus ID of the servo we want to modify
+  :param servo_id: The bus ID of the servo to be written to.
   :type servo_id: integer
   :param parameter: The control table point to write.
   :type parameter: string
-  :param value: The value to write as an integer
+  :param value: The value to write.
   :type value: integer
 
 .. py:function:: read( servo_id, parameter )
@@ -41,12 +43,12 @@ API reference for usb2ax
   >>> usb2ax.read( 1, "baud_rate" ) # Result should be 1 (corresponds to 1 MHz)
   1 
 
-  :param servo_id: The bus ID of the servo we want to modify
+  :param servo_id: The bus ID of the servo to read from.
   :type servo_id: integer
-  :param parameter: The control table point to write.
+  :param parameter: The control table point to read.
   :type parameter: string
-  :param value: The value to write as an integer
-  :type value: integer
+  :returns: The value in the control table at the specified point
+  :rtype: integer
 
 .. py:function:: sync_write( servo_id, parameter, value )
 
@@ -59,28 +61,28 @@ API reference for usb2ax
 
   >>> usb2ax.write( [1,2], "goal_position", [600,400] ) 
 
-  :param servo_ids: The bus IDs of the servos we want to modify
-  :type servo_ids: integer
+  :param servo_ids: The bus IDs of the servos to modify.
+  :type servo_ids: iterable
   :param parameter: The control table point to write.
   :type parameter: string
   :param values: The values to write.
-  :type values: integer
+  :type values: iterable
 
-.. py:function:: read( servo_id, parameter )
+.. py:function:: sync_read( servo_id, parameter, value )
 
-  Read a single control table address.
+  Read from the control tables of several servos.
 
-  For example, to read the baud rate of servo 1:
-  
-  >>> usb2ax.read( 1, "baud_rate" ) # Result should be 1 (corresponds to 1 MHz)
-  1 
+  Supply a list of servo ids, which parameter you want to get.
 
-  :param servo_id: The bus ID of the servo we want to modify
-  :type servo_id: integer
-  :param parameter: The control table point to write.
+  >>> usb2ax.read( [1,2], "id" ) 
+  [1,2]
+
+  :param servo_ids: The bus IDs of the servos to read from.
+  :type servo_ids: iterable
+  :param parameter: The control table point to read.
   :type parameter: string
-  :param value: The value to write as an integer
-  :type value: integer
+  :returns: A list of values from the servos specified.
+  :rtype: list
 
 .. py:function:: reset_usb2ax( [device_id=0] )
 
