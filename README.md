@@ -39,11 +39,14 @@ This does the following:
 ```python
 import usb2ax
 
-usb2ax.initialize(0) # Expects to see the USB2AX at /dev/ttyACM0
-usb2ax.write(1,"goal_position",512) # Move the servo with ID 1 to position 512
-                                    # (valid values are 0-1024, 512 is in the middle)
+try:
+  usb2ax.initialize(0) # Expects to see the USB2AX at /dev/ttyACM0
+  usb2ax.write(1,"goal_position",512) # Move the servo with ID 1 to position 512
+                                      # (valid values are 0-1024, 512 is in the middle)
 
-print usb2ax.read(1,"present_position") # Prints the actual position reported by the dynamixel.
+  print usb2ax.read(1,"present_position") # Prints the actual position reported by the dynamixel.
+finally:
+  usb2ax.terminate() # Shut down the connection neatly
 ```
 
 ### Sync read/write
@@ -55,12 +58,15 @@ See the file [example.py](https://github.com/jthorniley/pyusb2ax/blob/master/exa
 ```python    
 import usb2ax
 
-usb2ax.initialize(0)
+try:
+  usb2ax.initialize(0)
 
-usb2ax.sync_write([1,2],"goal_position",[600,400]) # Move servo 1 to 600 and servo 2 to 400
-data = usb2ax.sync_read([1,2],"present_position") # Sync read
-print data[0] # Position of servo 1
-print data[1] # Position of servo 2
+  usb2ax.sync_write([1,2],"goal_position",[600,400]) # Move servo 1 to 600 and servo 2 to 400
+  data = usb2ax.sync_read([1,2],"present_position") # Sync read
+  print data[0] # Position of servo 1
+  print data[1] # Position of servo 2
+finally:
+  usb2ax.terminate() # Shut down the connection neatly
 ```
 
 ## Available commands
