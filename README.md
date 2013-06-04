@@ -28,8 +28,8 @@ This does the following:
 
 * Downloads the Dynamixel SDK
 * Patches it to make it compatible with the USB2AX.
- * Specifically, that means turn the dxl_hal.c file into something more like Nicholas Saugnier's [modified verision](https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c). This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel which the SDK expects.
- * And makes modifications to allow passing the sync_read instruction through the API.
+ * Specifically, that means turn the dxl\_hal.c file into something more like Nicholas Saugnier's [modified verision](https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c). This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel which the SDK expects.
+ * And makes modifications to allow passing the sync\_read instruction through the API.
 * Creates a module called <tt>usb2ax</tt> which provides easy access to the dynamixel library from Python via the
   methods illustrated below.
 
@@ -59,7 +59,7 @@ See the file [example.py](https://github.com/jthorniley/pyusb2ax/blob/master/exa
 import usb2ax
 
 try:
-  usb2ax.initialize(0)
+  usb2ax.initialize(0, fix_sync_read_delay=True)
 
   usb2ax.sync_write([1,2],"goal_position",[600,400]) # Move servo 1 to 600 and servo 2 to 400
   data = usb2ax.sync_read([1,2],"present_position") # Sync read
@@ -155,7 +155,7 @@ You may need to add your user to the dialout group:
     $ usermod -a -G dialout <your_username>
 
 The group change only takes effect when you login. So either logout then in again, or if you are in
-a terminal you can do <tt>su - your_username</tt> to get a new login session.
+a terminal you can do <tt>su - your\_username</tt> to get a new login session.
 
 Finally, if you have modem-manager running (which might be the case on complete desktop
 Linux installs, probably less likely to be a problem on Raspberry Pi etc), it
