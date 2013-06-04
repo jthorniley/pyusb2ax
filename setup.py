@@ -1,6 +1,6 @@
 from distutils.core import setup, Extension
 import distutils.core
-import distutils.command.build_ext
+from Cython.Distutils import build_ext
 
 
 import subprocess
@@ -89,18 +89,6 @@ patch = """diff -U 3 a/dxl_hal.c b/dxl_hal.c
  	//dxl_hal_open(gDeviceName, baudrate);
 """
  	
-def dynamixel_gen():
-    if not os.path.exists("dynamixel.c"):
-        import pybindgen
-        from pybindgen import FileCodeSink
-        from pybindgen.gccxmlparser import ModuleParser
-        print "Generating dynamixel.c"
-        module_parser = ModuleParser("dynamixel","::")
-        module = module_parser.parse(["DXL_SDK_LINUX_v1_01/include/dynamixel.h"])
-        #pybindgen.write_preamble(FileCodeSink(sys.stdout))
-        module.add_include('"dynamixel.h"')
-        module.generate(FileCodeSink(open("dynamixel.c","w+")))
-
 def patch_dxl_sdk():
 
     sp = subprocess.Popen(["patch","-N","-r","-","DXL_SDK_LINUX_v1_01/src/dxl_hal.c"],stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -164,24 +152,22 @@ def download_dxl_sdk():
 
 
 
-class build_bindings(distutils.command.build_ext.build_ext):
+class build_bindings(build_ext):
     def run(self):
         
         download_dxl_sdk()
         patch_dxl_sdk()
-        dynamixel_gen()
         
-        distutils.command.build_ext.build_ext.run(self)
+        build_ext.run(self)
 
-dynamixel_mod = Extension('dynamixel',
+dynamixel_mod = Extension('usb2ax',
                     sources = ['DXL_SDK_LINUX_v1_01/src/dxl_hal.c',
                         'DXL_SDK_LINUX_v1_01/src/dynamixel.c',
-                        'dynamixel.c'],
+                        'usb2ax.pyx'],
                     include_dirs = ['DXL_SDK_LINUX_v1_01/src/','DXL_SDK_LINUX_v1_01/include'])
 
 setup (name = 'PyUSB2AX',
         version = '1.0',
         description = 'Python binding for controlling USB2AX',
-        py_modules = ["usb2ax"],
         ext_modules = [dynamixel_mod],
         cmdclass = {"build_ext":build_bindings} )

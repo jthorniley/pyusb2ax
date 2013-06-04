@@ -8,7 +8,7 @@ This is a build script and simple python module that allows you to easily contro
 
 ## Requirements
 
-Nothing complicated other than python2.7, and of course a Dynamixel AX12, a USB2AX, and some way to connect power. I'm assuming you're reasonably familiar with that stuff.
+Python 2.7 and Cython.
 
 ## Installation
 
@@ -21,16 +21,14 @@ This does the following:
 * Downloads the Dynamixel SDK
 * Patches it to make it compatible with the USB2AX.
  * Specifically, that means turn the dxl_hal.c file into something more like Nicholas Saugnier's [modified verision](https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c). This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel with the SDK expects.
-* Generates and compiles a python module called **dynamixel** that wraps the C library straightforwardly.
-* Installs a second module called **usb2ax** which can be used to access anything in **dynamixel** as well as some more helpful wrapper functions.
+* Creates a module called usb2ax which provides easy access to the dynamixel library from Python via the
+  methods illustrated below.
 
 ## Example
 
     import usb2ax
     
-    usb2ax.dxl_initialize(0,1) # Expects to see the USB2AX at /dev/ttyACM0, with baud rate 1MBPS
-                               # This is directly wrapping the equivalent function in the C library:
-                               # http://support.robotis.com/en/software/dynamixel_sdk/api_reference/dxl_initialize.htm
+    usb2ax.initialize(0) # Expects to see the USB2AX at /dev/ttyACM0
     
     usb2ax.write(1,"goal_position",512) # Move the servo with ID 1 to position 512
                                         # (valid values are 0-1024, 512 is in the middle)
@@ -43,8 +41,10 @@ The library currently supports reading and writing via the above convention to
 the following AX12 control table addresses. Details of these settings can be found
 in the [AX12 manual](http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm).
 
-Note that usb2ax.write will fail if you try to write to one of the values that is
-listed as read-only below.
+The <tt>read</tt> and <tt>write</tt> functions will raise exceptions if you
+try to access something not listed below, or try to write to something listed
+as read-only.
+
 
 <table>
 <tr><th>Parameter</th><th>Control table address</th><th>Read-only (R) or Read/Write(R/W)</th></tr>
