@@ -113,6 +113,7 @@ Make sure that
 * You have properly connected all the 3-wire serial connections.
 * You have properly connected the power to the dynamixels. Remember that the USB2AX does not supply power to the motors, you have to connect that up separately (the USB2AX website has more information).
  * When you plug the power in, a red LED on the back of the servo should light up briefly.
+* The red LED on the back of the servo should NOT be flashing. If it is the servo is in an error state. You can usually fix this by disconnecting then reconnecting the power.
 
 ### Connection problems
 
