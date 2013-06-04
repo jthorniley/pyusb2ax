@@ -160,3 +160,7 @@ Better documentation.
 
 Interface for setting angles in radians.
 
+
+## Author
+
+[James Thorniley](http://www.jamesthorniley.com)
