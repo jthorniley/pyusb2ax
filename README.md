@@ -5,7 +5,7 @@ A simple wrapper to access Dynamixel AX servos using the USB2AX interface under 
 _N.B. This is a python module that wraps a Linux C library - it will not help you access Dynamixels from other operating systems._
 
 This is a build script and simple python module that allows you to easily control Dynamixel AX-12 servos (and possibly other models) using a 
-[USB2AX](http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax). It wraps the standard dynamixel C library 
+Xevelabs [USB2AX](http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax). It wraps the standard dynamixel C library 
 available [here](http://support.robotis.com/en/software/dynamixel_sdk/usb2dynamixel/usb2dxl_linux.htm) after applying 
 a patch to make it compatible with the USB2AX.
 
@@ -16,7 +16,7 @@ command that the USB2AX provides for faster reads from multiple servos.
 
 ## Requirements
 
-Python 2.7 and Cython.
+Python 2.7 and Cython. You will also need the relevant hardware: one or more [Dynamixel AX-12](http://www.robotis.com/xe/dynamixel_en) type servos, the excellent and tiny [USB2AX](http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax) interface device created by Xevelabs, and some way to power them, e.g. a separate battery or the [SMPS2Dynamixel](http://www.trossenrobotics.com/store/p/5886-SMPS2Dynamixel-Adapter.aspx) adapter. Refer to the Dynamixel [manual](http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm) or the USB2AX website for further help with setting up the hardware.
 
 ## Installation
 
@@ -121,6 +121,8 @@ like
     [ 9216.992853] usb 3-3.3: SerialNumber: 6403635373035121E161
     [ 9216.993668] usb 3-3.3: ep 0x82 - rounding interval to 1024 microframes, ep desc says 2040 microframes
     [ 9216.994410] cdc_acm 3-3.3:1.0: ttyACM0: USB ACM device
+
+If it hasn't connected, try the USB2AX [website](http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax) for some help.
 
 Note the name <tt>ttyACM0</tt> -- if you get something else like <tt>ttyACM1</tt> then
 you need to call <tt>usb2ax.initialize(1)</tt>.
