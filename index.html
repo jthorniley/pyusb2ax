@@ -80,15 +80,14 @@ methods illustrated below.</li>
 <h3>
 <a name="serial-readwrite" class="anchor" href="#serial-readwrite"><span class="octicon octicon-link"></span></a>Serial read/write</h3>
 
-<pre><code>import usb2ax
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">usb2ax</span>
 
-usb2ax.initialize(0) # Expects to see the USB2AX at /dev/ttyACM0
+<span class="n">usb2ax</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c"># Expects to see the USB2AX at /dev/ttyACM0</span>
+<span class="n">usb2ax</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s">"goal_position"</span><span class="p">,</span><span class="mi">512</span><span class="p">)</span> <span class="c"># Move the servo with ID 1 to position 512</span>
+                                    <span class="c"># (valid values are 0-1024, 512 is in the middle)</span>
 
-usb2ax.write(1,"goal_position",512) # Move the servo with ID 1 to position 512
-                                    # (valid values are 0-1024, 512 is in the middle)
-
-print usb2ax.read(1,"present_position") # Prints the actual position reported by the dynamixel.
-</code></pre>
+<span class="k">print</span> <span class="n">usb2ax</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s">"present_position"</span><span class="p">)</span> <span class="c"># Prints the actual position reported by the dynamixel.</span>
+</pre></div>
 
 <h3>
 <a name="sync-readwrite" class="anchor" href="#sync-readwrite"><span class="octicon octicon-link"></span></a>Sync read/write</h3>
@@ -97,15 +96,15 @@ print usb2ax.read(1,"present_position") # Prints the actual position reported by
 
 <p>See the file example.py for another usage of this.</p>
 
-<pre><code>import usb2ax
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">usb2ax</span>
 
-usb2ax.initialize(0)
+<span class="n">usb2ax</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-usb2ax.sync_write([1,2],"goal_position",[600,400]) # Move servo 1 to 600 and servo 2 to 400
-data = usb2ax.sync_read([1,2],"present_position") # Sync read
-print data[0] # Position of servo 1
-print data[1] # Position of servo 2
-</code></pre>
+<span class="n">usb2ax</span><span class="o">.</span><span class="n">sync_write</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s">"goal_position"</span><span class="p">,[</span><span class="mi">600</span><span class="p">,</span><span class="mi">400</span><span class="p">])</span> <span class="c"># Move servo 1 to 600 and servo 2 to 400</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">usb2ax</span><span class="o">.</span><span class="n">sync_read</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s">"present_position"</span><span class="p">)</span> <span class="c"># Sync read</span>
+<span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c"># Position of servo 1</span>
+<span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c"># Position of servo 2</span>
+</pre></div>
 
 <h2>
 <a name="available-commands" class="anchor" href="#available-commands"><span class="octicon octicon-link"></span></a>Available commands</h2>
@@ -306,7 +305,17 @@ $ mv org.freedesktop.ModemManager.service org.freedesktop.ModemManager.service.d
       </footer>
     </div>
 
-    
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-41449164-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
 
   </body>
 </html>
