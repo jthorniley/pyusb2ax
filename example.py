@@ -12,8 +12,7 @@ E.g. python example.py 1 2 will move servos
 
 servo_list = [int(x) for x in sys.argv[1:]]
 
-try:
-    usb2ax.initialize(fix_sync_read_delay = True)
+with usb2ax.Controller(fix_sync_read_delay = True) as dxl:
 
     print "Servo: \t" + "\t".join( sys.argv[1:] ) + "\tRead rate (Hz)\tNumber of errors"
 
@@ -30,12 +29,12 @@ try:
         while True:
             pos = math.sin(t0*math.pi)*50.0 
             pos = int(512+pos)
-            usb2ax.sync_write(servo_list,"goal_position",[pos]*len(servo_list))
+            dxl.sync_write(servo_list,"goal_position",[pos]*len(servo_list))
 
             done = False
             while not done:
                 try:
-                    pos_data = usb2ax.sync_read(servo_list,"present_position")
+                    pos_data = dxl.sync_read(servo_list,"present_position")
                     done = True
                 except usb2ax.ReadError, e:
                     n_read_errors += 1
@@ -54,6 +53,3 @@ try:
 
     except KeyboardInterrupt, e:
         print ""
-finally:
-    usb2ax.terminate()
-
