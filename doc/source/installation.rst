@@ -8,7 +8,7 @@ Python 2.7 and Cython. You will also need the relevant hardware.
 
 * One or more Dynamixel servos. This has been tested on the `Dynamixel AX-12 <http://www.robotis.com/xe/dynamixel_en>`_ but
   the MX-28T model *should* also work.
-* The wonderful `USB2AX <http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax>`_ interface device created by Xevelabs.
+* The `USB2AX <http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax>`_ interface device created by Xevelabs.
 * Some way to power the servos, e.g. a separate battery or the `SMPS2Dynamixel <http://www.trossenrobotics.com/store/p/5886-SMPS2Dynamixel-Adapter.aspx>`_ adapter. 
   Refer to the Dynamixel `manual <http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm>`_ or the USB2AX website for further help with setting up the hardware.
 

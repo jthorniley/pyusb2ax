@@ -16,14 +16,15 @@ API reference for usb2ax
   .. code-block:: python
 
      with Controller(device_id=0,fix_sync_read_delay=True) as dxl:
-       dxl.do_stuff...
+       do stuff...
 
   The `fix_sync_read_delay` argument should probably
   be set to True. It will change the return delay time
   setting for each Dynamixel to something compatible
-  with the USB2AX SYNC_READ function. It is set to False by
+  with the USB2AX SYNC_READ function if necessary. It is set to False by
   default so as not to unexpectedly change entries in the
-  attached servos' control tables.
+  control tables of 
+  attached servos.
 
   :param device_id:
     Where the device is located. E.g.
@@ -50,7 +51,7 @@ API reference for usb2ax
 
     :param servo_id: The bus ID of the servo to be written to.
     :type servo_id: integer
-    :param parameter: The control table point to write.
+    :param parameter: The control table point to write - a value allowed for the attached servo as listed in :ref:`control-tables`.
     :type parameter: string
     :param value: The value to write.
     :type value: integer
@@ -64,7 +65,7 @@ API reference for usb2ax
 
     :param servo_id: The bus ID of the servo to read from.
     :type servo_id: integer
-    :param parameter: The control table point to read.
+    :param parameter: The control table point to write - a value allowed for the attached servo as listed in :ref:`control-tables`.
     :type parameter: string
     :returns: The value in the control table at the specified point
     :rtype: integer
@@ -87,7 +88,7 @@ API reference for usb2ax
 
     :param servo_ids: The bus IDs of the servos to modify.
     :type servo_ids: iterable
-    :param parameter: The control table point to write.
+    :param parameter: The control table point to write - a value allowed for the attached servo as listed in :ref:`control-tables`.
     :type parameter: string
     :param values: The values to write.
     :type values: iterable
@@ -107,7 +108,7 @@ API reference for usb2ax
 
     :param servo_ids: The bus IDs of the servos to read from.
     :type servo_ids: iterable
-    :param parameter: The control table point to read.
+    :param parameter: The control table point to write - a value allowed for the attached servo as listed in :ref:`control-tables`.
     :type parameter: string
     :returns: A list of values from the servos specified.
     :rtype: list
