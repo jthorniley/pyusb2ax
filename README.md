@@ -55,6 +55,29 @@ Note that sync read/write should generally be faster.
 
 See the file [example.py](https://github.com/jthorniley/pyusb2ax/blob/master/example.py) for another usage of this.
 
+The sync_write command is a standard part of the dynamixel API, and should be reliable. It works by
+sending a single packet containing values to write to multiple servos at the same time. Unlike the
+normal write command, it does not wait for a status packet from the dynamixels, and so should be faster.
+
+The sync_read command is provided by the USB2AX and is designed to reduce latency introduced by
+the USB to serial port conversion, and so should also speed things up. Individual read instructions
+are still sent to each dynamixel, but the results are collated by the USB2AX and sent back
+as one packet.
+
+When a read instruction is sent to a servo, the servo will will a small amount of time
+determined by the <tt>return_delay_time</tt> parameter in its control table, then
+send a reply packet containing the information requested. By default
+the return delay time is set to 250, which appears to be rather too long for the sync_read command to
+work -- if you try to sync_read on servos with such a long delay time you will generally
+get nonsense results. To fix this quickly, you should call <tt>initialize</tt> with
+the <tt>fix_sync_read_delay</tt> argument set to True. This will check the return
+delay times of all the attached servos on startup, and fix them if necessary.
+If you don't set <tt>fix_sync_read_delay</tt>, the system will still check
+the return delay times on startup but will not change them. If any are found
+to have high values (i.e. greater than 20), the sync_read function will be disabled
+and will throw an exception if you try to use it.
+
+
 ```python    
 import usb2ax
 
