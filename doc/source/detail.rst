@@ -196,7 +196,7 @@ present_position              0x24                                  R
 present_speed                 0x26                                  R
 present_load                  0x28                                  R
 present_voltage               0x2A                                  R
-present_temp                  0x2A                                  R
+present_temp                  0x2B                                  R
 registered                    0x2C                                  R
 moving                        0x2E                                  R
 lock                          0x2F                                  R/W
@@ -237,7 +237,7 @@ present_position              0x24                                  R
 present_speed                 0x26                                  R
 present_load                  0x28                                  R
 present_temp                  0x2A                                  R
-present_voltage               0x2A                                  R
+present_voltage               0x2B                                  R
 registered                    0x2C                                  R
 moving                        0x2E                                  R
 lock                          0x2F                                  R/W
