@@ -99,10 +99,32 @@ methods illustrated below.</li>
 
 <p>See the file <a href="https://github.com/jthorniley/pyusb2ax/blob/master/example.py">example.py</a> for another usage of this.</p>
 
+<p>The sync_write command is a standard part of the dynamixel API, and should be reliable. It works by
+sending a single packet containing values to write to multiple servos at the same time. Unlike the
+normal write command, it does not wait for a status packet from the dynamixels, and so should be faster.</p>
+
+<p>The sync_read command is provided by the USB2AX and is designed to reduce latency introduced by
+the USB to serial port conversion, and so should also speed things up. Individual read instructions
+are still sent to each dynamixel, but the results are collated by the USB2AX and sent back
+as one packet.</p>
+
+<p>When a read instruction is sent to a servo, the servo will will a small amount of time
+determined by the <tt>return_delay_time</tt> parameter in its control table, then
+send a reply packet containing the information requested. By default
+the return delay time is set to 250, which appears to be rather too long for the sync_read command to
+work -- if you try to sync_read on servos with such a long delay time you will generally
+get nonsense results. To fix this quickly, you should call <tt>initialize</tt> with
+the <tt>fix_sync_read_delay</tt> argument set to True. This will check the return
+delay times of all the attached servos on startup, and fix them if necessary.
+If you don't set <tt>fix_sync_read_delay</tt>, the system will still check
+the return delay times on startup but will not change them. If any are found
+to have high values (i.e. greater than 20), the sync_read function will be disabled
+and will throw an exception if you try to use it.</p>
+
 <div class="highlight"><pre><span class="kn">import</span> <span class="nn">usb2ax</span>
 
 <span class="k">try</span><span class="p">:</span>
-  <span class="n">usb2ax</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="n">usb2ax</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
   <span class="n">usb2ax</span><span class="o">.</span><span class="n">sync_write</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s">"goal_position"</span><span class="p">,[</span><span class="mi">600</span><span class="p">,</span><span class="mi">400</span><span class="p">])</span> <span class="c"># Move servo 1 to 600 and servo 2 to 400</span>
   <span class="n">data</span> <span class="o">=</span> <span class="n">usb2ax</span><span class="o">.</span><span class="n">sync_read</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s">"present_position"</span><span class="p">)</span> <span class="c"># Sync read</span>
