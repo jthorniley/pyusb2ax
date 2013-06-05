@@ -56,15 +56,16 @@ to the bus. You should have all the servos you want to use attached
 and switched on before calling this.</p>
 <p>Suggested usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">(</span><span class="n">device_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
-  <span class="n">dxl</span><span class="o">.</span><span class="n">do_stuff</span><span class="o">...</span>
+  <span class="n">do</span> <span class="n">stuff</span><span class="o">...</span>
 </pre></div>
 </div>
 <p>The <cite>fix_sync_read_delay</cite> argument should probably
 be set to True. It will change the return delay time
 setting for each Dynamixel to something compatible
-with the USB2AX SYNC_READ function. It is set to False by
+with the USB2AX SYNC_READ function if necessary. It is set to False by
 default so as not to unexpectedly change entries in the
-attached servos&#8217; control tables.</p>
+control tables of
+attached servos.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -98,7 +99,7 @@ point:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>servo_id</strong> (<em>integer</em>) &#8211; The bus ID of the servo to be written to.</li>
-<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to write.</li>
+<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to write - a value allowed for the attached servo as listed in <a class="reference internal" href="detail.html#control-tables"><em>Control tables</em></a>.</li>
 <li><strong>value</strong> (<em>integer</em>) &#8211; The value to write.</li>
 </ul>
 </td>
@@ -124,7 +125,7 @@ point:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>servo_id</strong> (<em>integer</em>) &#8211; The bus ID of the servo to read from.</li>
-<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to read.</li>
+<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to write - a value allowed for the attached servo as listed in <a class="reference internal" href="detail.html#control-tables"><em>Control tables</em></a>.</li>
 </ul>
 </td>
 </tr>
@@ -161,7 +162,7 @@ a list of new values.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>servo_ids</strong> (<em>iterable</em>) &#8211; The bus IDs of the servos to modify.</li>
-<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to write.</li>
+<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to write - a value allowed for the attached servo as listed in <a class="reference internal" href="detail.html#control-tables"><em>Control tables</em></a>.</li>
 <li><strong>values</strong> (<em>iterable</em>) &#8211; The values to write.</li>
 </ul>
 </td>
@@ -196,7 +197,7 @@ a list of new values.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>servo_ids</strong> (<em>iterable</em>) &#8211; The bus IDs of the servos to read from.</li>
-<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to read.</li>
+<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to write - a value allowed for the attached servo as listed in <a class="reference internal" href="detail.html#control-tables"><em>Control tables</em></a>.</li>
 </ul>
 </td>
 </tr>
