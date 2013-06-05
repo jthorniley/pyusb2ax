@@ -50,10 +50,9 @@
         
   <div class="section" id="quick-start">
 <h1>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="asynchronous-access">
-<h2>Asynchronous access<a class="headerlink" href="#asynchronous-access" title="Permalink to this headline">¶</a></h2>
-<p>To use the library to do normal asynchronous reads and writes to the servos,
-simply instantiate a <a class="reference internal" href="usb2ax.html#usb2ax.Controller" title="usb2ax.Controller"><tt class="xref py py-class docutils literal"><span class="pre">usb2ax.Controller</span></tt></a> using the with construction:</p>
+<div class="section" id="serial-access">
+<h2>Serial access<a class="headerlink" href="#serial-access" title="Permalink to this headline">¶</a></h2>
+<p>The most basic use of the library to read and write to servos.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">()</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
 
     <span class="k">try</span><span class="p">:</span>

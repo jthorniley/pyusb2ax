@@ -1,11 +1,10 @@
 Quick start
 ===========
 
-Asynchronous access
--------------------
+Serial access
+-------------
 
-To use the library to do normal asynchronous reads and writes to the servos,
-simply instantiate a :py:class:`usb2ax.Controller` using the with construction:
+The most basic use of the library to read and write to servos.
 
 ::
     
