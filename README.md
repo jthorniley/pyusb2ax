@@ -1,5 +1,7 @@
 # PyUSB2AX
 
+The full documentation is now [here](http://jthorniley.github.io/pyusb2ax).
+
 A simple wrapper to access Dynamixel AX servos using the USB2AX interface under Linux.
 
 _N.B. This is a python module that wraps a Linux C library - it will not help you access Dynamixels from other operating systems._
@@ -14,120 +16,6 @@ also supports the
 [SYNC_READ](http://www.xevelabs.com/doku.php?id=product:usb2ax:advanced_instructions) 
 command that the USB2AX provides for faster reads from multiple servos.
 
-## Requirements
-
-Python 2.7 and Cython. You will also need the relevant hardware: one or more [Dynamixel AX-12](http://www.robotis.com/xe/dynamixel_en) type servos, the excellent and tiny [USB2AX](http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax) interface device created by Xevelabs, and some way to power them, e.g. a separate battery or the [SMPS2Dynamixel](http://www.trossenrobotics.com/store/p/5886-SMPS2Dynamixel-Adapter.aspx) adapter. Refer to the Dynamixel [manual](http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm) or the USB2AX website for further help with setting up the hardware.
-
-## Installation
-
-    git clone git://github.com/jthorniley/pyusb2ax.git
-    cd pyusb2ax
-    python setup.py install
-    
-This does the following:
-
-* Downloads the Dynamixel SDK
-* Patches it to make it compatible with the USB2AX.
- * Specifically, that means turn the dxl\_hal.c file into something more like Nicholas Saugnier's [modified verision](https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c). This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel which the SDK expects.
- * And makes modifications to allow passing the sync\_read instruction through the API.
-* Creates a module called <tt>usb2ax</tt> which provides easy access to the dynamixel library from Python via the
-  methods illustrated below.
-
-## Example
-
-### Serial read/write
-```python
-import usb2ax
-
-try:
-  usb2ax.initialize(0) # Expects to see the USB2AX at /dev/ttyACM0
-  usb2ax.write(1,"goal_position",512) # Move the servo with ID 1 to position 512
-                                      # (valid values are 0-1024, 512 is in the middle)
-
-  print usb2ax.read(1,"present_position") # Prints the actual position reported by the dynamixel.
-finally:
-  usb2ax.terminate() # Shut down the connection neatly
-```
-
-### Sync read/write
-
-Note that sync read/write should generally be faster.
-
-See the file [example.py](https://github.com/jthorniley/pyusb2ax/blob/master/example.py) for another usage of this.
-
-The sync_write command is a standard part of the dynamixel API, and should be reliable. It works by
-sending a single packet containing values to write to multiple servos at the same time. Unlike the
-normal write command, it does not wait for a status packet from the dynamixels, and so should be faster.
-
-The sync_read command is provided by the USB2AX and is designed to reduce latency introduced by
-the USB to serial port conversion, and so should also speed things up. Individual read instructions
-are still sent to each dynamixel, but the results are collated by the USB2AX and sent back
-as one packet.
-
-When a read instruction is sent to a servo, the servo will wait a small amount of time
-determined by the <tt>return_delay_time</tt> parameter in its control table, then
-send a reply packet containing the information requested. By default
-the return delay time is set to 250, which appears to be rather too long for the sync_read command to
-work -- if you try to sync_read on servos with such a long delay time you will generally
-get nonsense results. To fix this quickly, you should call <tt>initialize</tt> with
-the <tt>fix_sync_read_delay</tt> argument set to True. This will check the return
-delay times of all the attached servos on startup, and fix them if necessary.
-If you don't set <tt>fix_sync_read_delay</tt>, the system will still check
-the return delay times on startup but will not change them. If any are found
-to have high values (i.e. greater than 20), the sync_read function will be disabled
-and will throw an exception if you try to use it.
-
-
-```python    
-import usb2ax
-
-try:
-  #Note fix_sync_read_delay=True -- it is best to always do this
-  #if you plan to use sync_read
-  usb2ax.initialize(0, fix_sync_read_delay=True)
-
-  usb2ax.sync_write([1,2],"goal_position",[600,400]) # Move servo 1 to 600 and servo 2 to 400
-  data = usb2ax.sync_read([1,2],"present_position") # Sync read
-  print data[0] # Position of servo 1
-  print data[1] # Position of servo 2
-finally:
-  usb2ax.terminate() # Shut down the connection neatly
-```
-
-## Available commands
-
-The library currently supports reading and writing via the above convention to
-the following AX12 control table addresses. Details of these settings can be found
-in the [AX12 manual](http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm).
-
-The <tt>read</tt> and <tt>write</tt> functions will raise exceptions if you
-try to access something not listed below, or try to write to something listed
-as read-only.
-
-
-<table>
-<tr><th>Parameter</th><th>Control table address</th><th>Read-only (R) or Read/Write(R/W)</th></tr>
-<tr><td>model_no</td><td>0x00</td><td>R</td></tr>
-<tr><td>firmware_version</td><td>0x02</td><td>R</td></tr>
-<tr><td>id</td><td>0x03</td><td>R/W</td></tr>
-<tr><td>baud_rate</td><td>0x04</td><td>R/W</td></tr>
-<tr><td>return_delay_time</td><td>0x05</td><td>R/W</td></tr>
-<tr><td>cw_angle_limit</td><td>0x06</td><td>R/W</td></tr>
-<tr><td>ccw_angle_limit</td><td>0x08</td><td>R/W</td></tr>
-<tr><td>max_torque</td><td>0x0e</td><td>R/W</td></tr>
-<tr><td>torque_enable</td><td>0x18</td><td>R/W</td></tr>
-<tr><td>cw_compliance_margin</td><td>0x1a</td><td>R/W</td></tr>
-<tr><td>ccw_compliance_margin</td><td>0x1b</td><td>R/W</td></tr>
-<tr><td>cw_compliance_slope</td><td>0x1c</td><td>R/W</td></tr>
-<tr><td>ccw_compliance_slope</td><td>0x1d</td><td>R/W</td></tr>
-<tr><td>goal_position</td><td>0x1e</td><td>R/W</td></tr>
-<tr><td>moving_speed</td><td>0x20</td><td>R/W</td></tr>
-<tr><td>torque_limit</td><td>0x22</td><td>R/W</td></tr>
-<tr><td>present_position</td><td>0x24</td><td>R</td></tr>
-<tr><td>present_speed</td><td>0x26</td><td>R</td></tr>
-<tr><td>present_load</td><td>0x28</td><td>R</td></tr>
-<tr><td>punch</td><td>0x30</td><td>R/W</td></tr>
-</table>
 
 ## Troubleshooting
 
@@ -195,15 +83,6 @@ If you still have problems, check if anything else is locking the serial port wi
     $ sudo lsof | grep ACM
 
 The output of this should ideally be nothing. If it isn't, try and get rid of whatever is there.
-
-## TODO
-
-Support all the parameter settings.
-
-Better documentation.
-
-Interface for setting angles in radians.
-
 
 ## Author
 
