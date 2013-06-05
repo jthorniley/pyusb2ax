@@ -8,7 +8,8 @@ The most basic use of the library to read and write to servos.
 
 ::
     
-    with Controller() as dxl:
+    import usb2ax
+    with usb2ax.Controller() as dxl:
         
         try:
             actual_pos = dxl.read(1,"present_position")
@@ -27,7 +28,8 @@ PyUSB2AX also supports the SYNC_READ instruction provided by the USB2AX.
 
 ::
 
-    with Controller(fix_sync_read_delay=True) as dxl:
+    import usb2ax
+    with usb2ax.Controller(fix_sync_read_delay=True) as dxl:
 
         #Moves servo 1 to 400 and servo 2 to 600
         dxl.sync_write([1,2],"goal_position",[400,600])

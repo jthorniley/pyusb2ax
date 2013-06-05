@@ -53,7 +53,8 @@
 <div class="section" id="serial-access">
 <h2>Serial access<a class="headerlink" href="#serial-access" title="Permalink to this headline">¶</a></h2>
 <p>The most basic use of the library to read and write to servos.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">()</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">usb2ax</span>
+<span class="k">with</span> <span class="n">usb2ax</span><span class="o">.</span><span class="n">Controller</span><span class="p">()</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">actual_pos</span> <span class="o">=</span> <span class="n">dxl</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;present_position&quot;</span><span class="p">)</span>
@@ -70,7 +71,8 @@
 <div class="section" id="sync-read-write">
 <h2>Sync read/write<a class="headerlink" href="#sync-read-write" title="Permalink to this headline">¶</a></h2>
 <p>PyUSB2AX also supports the SYNC_READ instruction provided by the USB2AX.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">(</span><span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">usb2ax</span>
+<span class="k">with</span> <span class="n">usb2ax</span><span class="o">.</span><span class="n">Controller</span><span class="p">(</span><span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
 
     <span class="c">#Moves servo 1 to 400 and servo 2 to 600</span>
     <span class="n">dxl</span><span class="o">.</span><span class="n">sync_write</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s">&quot;goal_position&quot;</span><span class="p">,[</span><span class="mi">400</span><span class="p">,</span><span class="mi">600</span><span class="p">])</span>
