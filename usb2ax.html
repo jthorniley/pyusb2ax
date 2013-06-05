@@ -183,14 +183,10 @@ a list of new values.</p>
 <tt class="descname">sync_read</tt><big>(</big><em>servo_id</em>, <em>parameter</em>, <em>value</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.sync_read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read from the control tables of several servos.</p>
 <p>Supply a list of servo ids, which parameter you want to get.</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd><dl class="first last docutils">
-<dt>with Controller(fix_sync_read_delay=True) as dxl:</dt>
-<dd>usb2ax.sync_read( [1,2], &#8220;id&#8221; ) # Returns [1,2]</dd>
-</dl>
-</dd>
-</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">(</span><span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
+  <span class="n">usb2ax</span><span class="o">.</span><span class="n">sync_read</span><span class="p">(</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="s">&quot;id&quot;</span> <span class="p">)</span> <span class="c"># Returns [1,2]</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

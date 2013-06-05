@@ -103,6 +103,7 @@ API reference for usb2ax
     Supply a list of servo ids, which parameter you want to get.
 
     ::
+
       with Controller(fix_sync_read_delay=True) as dxl:
         usb2ax.sync_read( [1,2], "id" ) # Returns [1,2]
 
