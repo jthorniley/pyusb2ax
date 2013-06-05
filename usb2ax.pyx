@@ -226,6 +226,11 @@ cdef _read(int servo_id, int address, int length):
 
 
 class Controller:
+    """
+    The Controller class is the main action centre for the USB2AX
+    interface. You contruct one, use its read, write, sync_read
+    and sync_write methods.
+    """
 
     sync_read_ok = True
     servo_list = []
@@ -317,6 +322,9 @@ usb2ax: Success!
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        self.terminate()
+
+    def terminate(self):
         dxl_terminate()
 
     def write(self,servo_id,parameter,value):
@@ -444,3 +452,11 @@ usb2ax: Success!
             raise ReadError(status)
 
         return result
+
+    def reset(self, servo_id):
+
+        dxl_set_txpacket_id(servo_id)
+        dxl_set_txpacket_instruction(0x06) # RESET
+        dxl_set_txpacket_length(2)
+        dxl_txrx_packet()
+        status = dxl_get_result()

@@ -1,0 +1,69 @@
+
+This is a doctest for various functionality of the usb2ax module
+
+>>> import usb2ax
+>>> dxl = usb2ax.Controller(100)
+Traceback (most recent call last):
+InitError: There was a problem connecting to the USB2AX at /dev/ttyACM100
+>>> dxl = usb2ax.Controller(fix_sync_read_delay=True)
+>>> 1 in dxl.servo_list
+True
+>>> 100 not in dxl.servo_list
+True
+>>> 1 in dxl.servo_map.keys()
+True
+>>> dxl.servo_models[1]
+'AX-12   '
+>>> dxl.servo_map[1] is usb2ax.MMAP_AX
+True
+>>> dxl.sync_write( dxl.servo_list, "goal_position", [512]*len(dxl.servo_list) )
+>>> dxl.write(1,"goal_position",512)
+>>> dxl.write(1,"blah",5000)
+Traceback (most recent call last):
+UnknownParameterError: Servo 1 is a AX-12    which does not support the blah parameter
+
+You shouldn't be able to write to the model_no parameter:
+
+
+>>> dxl.write(1,"model_no",12)
+Traceback (most recent call last):
+InvalidWriteParameterError
+
+Move the servo, it should update its position in response
+
+>>> from time import sleep
+>>> dxl.write(1,"goal_position",450)
+>>> sleep(0.5)
+>>> dxl.read(1,"present_position") < 500
+True
+>>> dxl.write(1,"goal_position",550)
+>>> sleep(0.5)
+>>> dxl.read(1,"present_position") > 500
+True
+
+Reset the servo, this should cause it to get a bad return delay time
+
+>>> dxl.reset(1)
+>>> sleep(1.0)
+>>> dxl.read(1,"return_delay_time")
+250
+>>> dxl.terminate()
+>>> dxl = usb2ax.Controller(fix_sync_read_delay=False)
+
+Now sync_read should fail
+
+>>> dxl.sync_read([1],"present_position")
+Traceback (most recent call last):
+SyncReadError: You tried to sync read but some of your devices
+are set to return too slowly. To fix this call initialize with
+fix_sync_read_delay = True.
+<BLANKLINE>
+>>> dxl.terminate()
+
+Calling with fix_sync_read_delay should fix it
+
+>>> dxl = usb2ax.Controller(fix_sync_read_delay=True)
+>>> dxl.sync_read([1],"present_position")[0] in range(540,560)
+True
+>>> dxl.terminate()
+
