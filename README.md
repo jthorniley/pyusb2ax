@@ -82,6 +82,8 @@ and will throw an exception if you try to use it.
 import usb2ax
 
 try:
+  #Note fix_sync_read_delay=True -- it is best to always do this
+  #if you plan to use sync_read
   usb2ax.initialize(0, fix_sync_read_delay=True)
 
   usb2ax.sync_write([1,2],"goal_position",[600,400]) # Move servo 1 to 600 and servo 2 to 400
