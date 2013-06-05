@@ -20,7 +20,8 @@ COMM_RXTIMEOUT = 6
 COMM_RXCORRUPT = 7
 COMM_SYNC_READ_FAIL = 100
 
-MMAP={
+MMAP_AX={
+    #EEPROM
     "model_no":[0x00,2,False],
     "firmware_version":[0x02,1,False],
     "id":[0x03,1,True],
@@ -29,8 +30,18 @@ MMAP={
     "cw_angle_limit":[0x06,2,True],
     "ccw_angle_limit":[0x08,2,True],
 
+    "high_limit_temp":[0x0B,1,True],
+    "low_limit_voltage":[0x0C,1,True],
+    "high_limit_voltage":[0x0D,1,True],
+
     "max_torque":[0x0E,2,True],
+    "status_return_level":[0x10,1,True],
+    "alarm_led":[0x11,1,True],
+    "alarm_shutdown":[0x12,1,True],
+
+    #RAM
     "torque_enable":[0x18,1,True],
+    "led":[0x19,1,True],
     "cw_compliance_margin":[0x1A,1,True],
     "ccw_compliance_margin":[0x1B,1,True],
     "cw_compliance_slope":[0x1C,1,True],
@@ -41,7 +52,52 @@ MMAP={
     "present_position":[0x24,2,False],
     "present_speed":[0x26,2,False],
     "present_load":[0x28,2,False],
+    "present_voltage":[0x2A,1,False],
+    "present_temp":[0x2A,1,False],
+    "registered":[0x2C,1,False],
+    "moving":[0x2E,1,False],
+    "lock":[0x2F,1,True],
     "punch":[0x30,2,True]
+    }
+
+MMAP_MX={
+    #EEPROM
+    "model_no":[0x00,2,False],
+    "firmware_version":[0x02,1,False],
+    "id":[0x03,1,True],
+    "baud_rate":[0x04,1,True],
+    "return_delay_time":[0x05,1,True],
+    "cw_angle_limit":[0x06,2,True],
+    "ccw_angle_limit":[0x08,2,True],
+
+    "high_limit_temp":[0x0B,1,True],
+    "low_limit_voltage":[0x0C,1,True],
+    "high_limit_voltage":[0x0D,1,True],
+
+    "max_torque":[0x0E,2,True],
+    "status_return_level":[0x10,1,True],
+    "alarm_led":[0x11,1,True],
+    "alarm_shutdown":[0x12,1,True],
+
+    #RAM
+    "torque_enable":[0x18,1,True],
+    "led":[0x19,1,True],
+    "d_gain":[0x1A,1,True],
+    "i_gain":[0x1B,1,True],
+    "p_gain":[0x1C,1,True],
+    "goal_position":[0x1E,2,True],
+    "moving_speed":[0x20,2,True],
+    "torque_limit":[0x22,2,True],
+    "present_position":[0x24,2,False],
+    "present_speed":[0x26,2,False],
+    "present_load":[0x28,2,False],
+    "present_voltage":[0x2A,1,False],
+    "present_temp":[0x2A,1,False],
+    "registered":[0x2C,1,False],
+    "moving":[0x2E,1,False],
+    "lock":[0x2F,1,True],
+    "punch":[0x30,2,True],
+    "goal_acceleration":[0x49,1,True]
     }
 
 
@@ -104,7 +160,15 @@ class ReadError(Exception):
         return str(self.error_id)
 
 class UnknownParameterError(Exception):
-    pass
+    def __init__(self, servo_id, parameter, controller):
+        self.servo_id = servo_id
+        self.parameter = parameter
+        self.controller = controller
+
+    def __str__(self):
+        return "Servo %d is a %s which does not support the %s parameter" % (
+                self.servo_id, self.controller.servo_models[self.servo_id],
+                self.parameter )
 
 class InvalidWriteParameterError(Exception):
     pass
@@ -118,6 +182,13 @@ class SyncReadError(Exception):
 are set to return too slowly. To fix this call initialize with
 fix_sync_read_delay = True.
 """
+
+class ServoNotAttachedError(Exception):
+    def __init__(self, servo_id):
+        self.servo_id = servo_id
+
+    def __str__(self):
+        return "Servo with id %d not attached to bus" % self.servo_id
 
 def reset_usb2ax(device_id=0):
     """
@@ -156,6 +227,11 @@ cdef _read(int servo_id, int address, int length):
 
 class Controller:
 
+    sync_read_ok = True
+    servo_list = []
+    servo_models = {}
+    servo_map = {}
+
     def __init__(self, device_id=0, fix_sync_read_delay = False):
         """
         Connect to the USB2AX device.
@@ -170,8 +246,6 @@ class Controller:
         Raises InitError if there was a problem.
         """
 
-        self.sync_read_ok = True
-
         result = dxl_initialize(device_id,1)
         if result == 0:
             raise InitError(device_id)
@@ -184,16 +258,21 @@ usb2ax: USB2AX          : /dev/ttyACM%d
         for i in range(1,253):
 
             try:
-                model = self.read(i, "model_no")
+                model = _read(i, 0x00, 2) #Read model number
 
+                my_map = MMAP_AX
                 if model in [12,18]:
                     model = "AX-%d   " % model
                 elif model == 29:
                     model = "MX-%dT  " % model
+                    my_map = MMAP_MX
                 else:
                     model = "Model %d" % model
                 sys.stderr.write("usb2ax: %s        : %d\n" % (model, i))
                 no_devices_connected =False
+                self.servo_list.append(i)
+                self.servo_models[i] = model
+                self.servo_map[i] = my_map
                 try:
                     delay = self.read(i,"return_delay_time")
                     if delay > 20:
@@ -253,10 +332,12 @@ usb2ax: Success!
         To set the target position of the servo with bus ID 1
         to 512 (i.e. the middle).
         """
+        if servo_id not in self.servo_map.keys():
+            raise ServoNotAttachedError(servo_id)
+        MMAP = self.servo_map[servo_id]
 
         if parameter not in MMAP.keys():
-            print "Could not write unknown parameter %s" % parameter
-            raise UnknownParameterError()
+            raise UnknownParameterError(servo_id, parameter, self)
 
         info = MMAP[parameter]
         if not info[2]:
@@ -278,9 +359,12 @@ usb2ax: Success!
 
         If there is an error, this will raise ReadError. 
         """
+        if servo_id not in self.servo_map.keys():
+            raise ServoNotAttachedError(servo_id)
+        MMAP = self.servo_map[servo_id]
+
         if parameter not in MMAP.keys():
-            print "Could not write unknown parameter %s" % parameter
-            raise UnknownParameterError()
+            raise UnknownParameterError(servo_id, parameter, self)
 
         info = MMAP[parameter]
         return _read( servo_id, info[0], info[1] )
@@ -288,11 +372,14 @@ usb2ax: Success!
 
     def sync_write(self,ids,parameter,values):
 
-        if parameter not in MMAP.keys():
-            print "Could not write unknown parameter %s" % parameter
-            raise UnknownParameterError()
+        for servo_id in ids:
+            if servo_id not in self.servo_map.keys():
+                raise ServoNotAttachedError(servo_id)
+            MMAP = self.servo_map[servo_id]
+            if parameter not in MMAP.keys():
+                raise UnknownParameterError(servo_id, parameter, self)
+            info = MMAP[parameter]
 
-        info = MMAP[parameter]
         if not info[2]:
             print "Parameter %s not writable" % parameter
             raise InvalidWriteParameterError()
@@ -323,11 +410,14 @@ usb2ax: Success!
         if not self.sync_read_ok:
             raise SyncReadError()
 
-        if parameter not in MMAP.keys():
-            print "Could not write unknown parameter %s" % parameter
-            raise UnknownParameterError()
 
-        info = MMAP[parameter]
+        for servo_id in ids:
+            if servo_id not in self.servo_map.keys():
+                raise ServoNotAttachedError(servo_id)
+            MMAP = self.servo_map[servo_id]
+            if parameter not in MMAP.keys():
+                raise UnknownParameterError(servo_id, parameter, self)
+            info = MMAP[parameter]
 
         n_servos = len(ids)
 
