@@ -70,9 +70,7 @@ simply instantiate a <a class="reference internal" href="usb2ax.html#usb2ax.Cont
 </div>
 <div class="section" id="sync-read-write">
 <h2>Sync read/write<a class="headerlink" href="#sync-read-write" title="Permalink to this headline">¶</a></h2>
-<p>PyUSB2AX also supports the SYNC_READ instruction provided by the USB2AX. This
-means you can make accesses to multiple servos rather quicker
-using synchronous reads and writes across several servos.</p>
+<p>PyUSB2AX also supports the SYNC_READ instruction provided by the USB2AX.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">(</span><span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
 
     <span class="c">#Moves servo 1 to 400 and servo 2 to 600</span>
@@ -90,8 +88,9 @@ using synchronous reads and writes across several servos.</p>
         <span class="k">print</span> <span class="s">&quot;There was an error performing the sync_read&quot;</span>
 </pre></div>
 </div>
-<p>Note that when we initialized the <a class="reference internal" href="usb2ax.html#usb2ax.Controller" title="usb2ax.Controller"><tt class="xref py py-class docutils literal"><span class="pre">usb2ax.Controller</span></tt></a> we
-passed the argument <cite>fix_sync_read_delay=True</cite>. This will ensure that
+<p>Note that when initializing the <a class="reference internal" href="usb2ax.html#usb2ax.Controller" title="usb2ax.Controller"><tt class="xref py py-class docutils literal"><span class="pre">usb2ax.Controller</span></tt></a> it is usually
+a good idea to
+pass the argument <cite>fix_sync_read_delay=True</cite>. This will ensure that
 the dynamixels are properly configured to support synchronous reads,
 see <a class="reference internal" href="detail.html#sync-read-detail"><em>Sync read delay timing</em></a> for more information.</p>
 </div>
