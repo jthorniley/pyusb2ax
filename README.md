@@ -64,7 +64,7 @@ the USB to serial port conversion, and so should also speed things up. Individua
 are still sent to each dynamixel, but the results are collated by the USB2AX and sent back
 as one packet.
 
-When a read instruction is sent to a servo, the servo will will a small amount of time
+When a read instruction is sent to a servo, the servo will wait a small amount of time
 determined by the <tt>return_delay_time</tt> parameter in its control table, then
 send a reply packet containing the information requested. By default
 the return delay time is set to 250, which appears to be rather too long for the sync_read command to
