@@ -321,8 +321,6 @@ def sync_read(ids,parameter):
 
     n_servos = len(ids)
 
-    sync_read_complete = False
-
     dxl_set_txpacket_id(253)#USB2AX reserved ID
     dxl_set_txpacket_instruction(0x84) # Sync read
     dxl_set_txpacket_length(n_servos+4)
