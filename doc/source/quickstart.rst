@@ -24,9 +24,7 @@ simply instantiate a :py:class:`usb2ax.Controller` using the with construction:
 Sync read/write
 ---------------
 
-PyUSB2AX also supports the SYNC_READ instruction provided by the USB2AX. This
-means you can make accesses to multiple servos rather quicker
-using synchronous reads and writes across several servos.
+PyUSB2AX also supports the SYNC_READ instruction provided by the USB2AX. 
 
 ::
 
@@ -46,7 +44,8 @@ using synchronous reads and writes across several servos.
         except usb2ax.ReadError, e:
             print "There was an error performing the sync_read"
 
-Note that when we initialized the :py:class:`usb2ax.Controller` we 
-passed the argument `fix_sync_read_delay=True`. This will ensure that
+Note that when initializing the :py:class:`usb2ax.Controller` it is usually
+a good idea to 
+pass the argument `fix_sync_read_delay=True`. This will ensure that
 the dynamixels are properly configured to support synchronous reads,
 see :ref:`sync-read-detail` for more information.
