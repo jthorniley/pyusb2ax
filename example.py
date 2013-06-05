@@ -3,18 +3,11 @@ import time
 import math
 import sys
 
-if len(sys.argv) == 1:
-    print """Usage: python example.py [id1] [id2] ...
-E.g. python example.py 1 2 will move servos
-1 and 2 and read back the positions information
-"""
-    sys.exit()
-
-servo_list = [int(x) for x in sys.argv[1:]]
-
 with usb2ax.Controller(fix_sync_read_delay = True) as dxl:
+    servo_list = dxl.servo_list[:12]
 
-    print "Servo: \t" + "\t".join( sys.argv[1:] ) + "\tRead rate (Hz)\tNumber of errors"
+
+    print "Servo: \t" + "\t".join( [str(x) for x in servo_list] ) + "\tRead rate (Hz)\tNumber of errors"
 
 
     buflen = 1000

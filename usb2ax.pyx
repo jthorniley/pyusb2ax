@@ -280,9 +280,9 @@ usb2ax: USB2AX          : /dev/ttyACM%d
                 self.servo_map[i] = my_map
                 try:
                     delay = self.read(i,"return_delay_time")
-                    if delay > 20:
+                    if delay > 1:
                         if fix_sync_read_delay:
-                            self.write(i,"return_delay_time",20)
+                            self.write(i,"return_delay_time",1)
                             try:
                                 new_delay = self.read(i,"return_delay_time")
                                 sys.stderr.write("usb2ax: INFO: Servo %d return delay set to %d to make compatible with sync_read\n" % (i, new_delay) )
