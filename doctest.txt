@@ -17,6 +17,10 @@ True
 >>> dxl.servo_map[1] is usb2ax.MMAP_AX
 True
 >>> dxl.sync_write( dxl.servo_list, "goal_position", [512]*len(dxl.servo_list) )
+>>> real_positions = dxl.sync_read( dxl.servo_list, "present_position" )
+>>> len(real_positions) == len(dxl.servo_list)
+True
+
 >>> dxl.write(1,"goal_position",512)
 >>> dxl.write(1,"blah",5000)
 Traceback (most recent call last):
