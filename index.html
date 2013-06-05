@@ -1,372 +1,110 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="PyUSB2AX : A python wrapper for the dynamixel SDK to work with the USB2AX interface " />
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>PyUSB2AX</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to PyUSB2AX’s documentation! &mdash; PyUSB2AX pre-release documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'pre-release',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="PyUSB2AX pre-release documentation" href="#" />
+    <link rel="next" title="Installation" href="installation.html" /> 
   </head>
-
   <body>
+      <div class="header"><h1 class="heading"><a href="#">
+          <span>PyUSB2AX pre-release documentation</span></a></h1>
+        <h2 class="heading"><span>Welcome to PyUSB2AX’s documentation!</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        <a class="uplink" href="#">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="installation.html">Installation</a>&#160;&#160;»
+        </p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/jthorniley/pyusb2ax">View on GitHub</a>
-
-          <h1 id="project_title">PyUSB2AX</h1>
-          <h2 id="project_tagline">A python wrapper for the dynamixel SDK to work with the USB2AX interface </h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/jthorniley/pyusb2ax/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/jthorniley/pyusb2ax/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
-<a name="pyusb2ax" class="anchor" href="#pyusb2ax"><span class="octicon octicon-link"></span></a>PyUSB2AX</h1>
-
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="welcome-to-pyusb2ax-s-documentation">
+<h1>Welcome to PyUSB2AX&#8217;s documentation!<a class="headerlink" href="#welcome-to-pyusb2ax-s-documentation" title="Permalink to this headline">¶</a></h1>
 <p>A simple wrapper to access Dynamixel AX servos using the USB2AX interface under Linux.</p>
-
 <p><em>N.B. This is a python module that wraps a Linux C library - it will not help you access Dynamixels from other operating systems.</em></p>
-
-<p>This is a build script and simple python module that allows you to easily control Dynamixel AX-12 servos (and possibly other models) using a 
-Xevelabs <a href="http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax">USB2AX</a>. It wraps the standard dynamixel C library 
-available <a href="http://support.robotis.com/en/software/dynamixel_sdk/usb2dynamixel/usb2dxl_linux.htm">here</a> after applying 
+<p>This is a build script and simple python module that allows you to easily control Dynamixel AX-12 servos (and possibly other models) using a
+Xevelabs <a class="reference external" href="http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax">USB2AX</a>. It wraps the standard dynamixel C library
+available <a class="reference external" href="http://support.robotis.com/en/software/dynamixel_sdk/usb2dynamixel/usb2dxl_linux.htm">here</a> after applying
 a patch to make it compatible with the USB2AX.</p>
-
 <p>A particular advantage of this is that in addition to the funtionality you would expect this library
-also supports the 
-<a href="http://www.xevelabs.com/doku.php?id=product:usb2ax:advanced_instructions">SYNC_READ</a> 
+also supports the
+<a class="reference external" href="http://www.xevelabs.com/doku.php?id=product:usb2ax:advanced_instructions">SYNC_READ</a>
 command that the USB2AX provides for faster reads from multiple servos.</p>
-
-<h2>
-<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
-
-<p>Python 2.7 and Cython. You will also need the relevant hardware: one or more <a href="http://www.robotis.com/xe/dynamixel_en">Dynamixel AX-12</a> type servos, the excellent and tiny <a href="http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax">USB2AX</a> interface device created by Xevelabs, and some way to power them, e.g. a separate battery or the <a href="http://www.trossenrobotics.com/store/p/5886-SMPS2Dynamixel-Adapter.aspx">SMPS2Dynamixel</a> adapter. Refer to the Dynamixel <a href="http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm">manual</a> or the USB2AX website for further help with setting up the hardware.</p>
-
-<h2>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
-
-<pre><code>git clone git://github.com/jthorniley/pyusb2ax.git
-cd pyusb2ax
-python setup.py install
-</code></pre>
-
-<p>This does the following:</p>
-
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
 <ul>
-<li>Downloads the Dynamixel SDK</li>
-<li>Patches it to make it compatible with the USB2AX.
-
-<ul>
-<li>Specifically, that means turn the dxl_hal.c file into something more like Nicholas Saugnier's <a href="https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c">modified verision</a>. This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel which the SDK expects.</li>
-<li>And makes modifications to allow passing the sync_read instruction through the API.</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#building">Building</a></li>
 </ul>
 </li>
-<li>Creates a module called <tt>usb2ax</tt> which provides easy access to the dynamixel library from Python via the
-methods illustrated below.</li>
-</ul><h2>
-<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h2>
-
-<h3>
-<a name="serial-readwrite" class="anchor" href="#serial-readwrite"><span class="octicon octicon-link"></span></a>Serial read/write</h3>
-
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">usb2ax</span>
-
-<span class="k">try</span><span class="p">:</span>
-  <span class="n">usb2ax</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c"># Expects to see the USB2AX at /dev/ttyACM0</span>
-  <span class="n">usb2ax</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s">"goal_position"</span><span class="p">,</span><span class="mi">512</span><span class="p">)</span> <span class="c"># Move the servo with ID 1 to position 512</span>
-                                      <span class="c"># (valid values are 0-1024, 512 is in the middle)</span>
-
-  <span class="k">print</span> <span class="n">usb2ax</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s">"present_position"</span><span class="p">)</span> <span class="c"># Prints the actual position reported by the dynamixel.</span>
-<span class="k">finally</span><span class="p">:</span>
-  <span class="n">usb2ax</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span> <span class="c"># Shut down the connection neatly</span>
-</pre></div>
-
-<h3>
-<a name="sync-readwrite" class="anchor" href="#sync-readwrite"><span class="octicon octicon-link"></span></a>Sync read/write</h3>
-
-<p>Note that sync read/write should generally be faster.</p>
-
-<p>See the file <a href="https://github.com/jthorniley/pyusb2ax/blob/master/example.py">example.py</a> for another usage of this.</p>
-
-<p>The sync_write command is a standard part of the dynamixel API, and should be reliable. It works by
-sending a single packet containing values to write to multiple servos at the same time. Unlike the
-normal write command, it does not wait for a status packet from the dynamixels, and so should be faster.</p>
-
-<p>The sync_read command is provided by the USB2AX and is designed to reduce latency introduced by
-the USB to serial port conversion, and so should also speed things up. Individual read instructions
-are still sent to each dynamixel, but the results are collated by the USB2AX and sent back
-as one packet.</p>
-
-<p>When a read instruction is sent to a servo, the servo will will a small amount of time
-determined by the <tt>return_delay_time</tt> parameter in its control table, then
-send a reply packet containing the information requested. By default
-the return delay time is set to 250, which appears to be rather too long for the sync_read command to
-work -- if you try to sync_read on servos with such a long delay time you will generally
-get nonsense results. To fix this quickly, you should call <tt>initialize</tt> with
-the <tt>fix_sync_read_delay</tt> argument set to True. This will check the return
-delay times of all the attached servos on startup, and fix them if necessary.
-If you don't set <tt>fix_sync_read_delay</tt>, the system will still check
-the return delay times on startup but will not change them. If any are found
-to have high values (i.e. greater than 20), the sync_read function will be disabled
-and will throw an exception if you try to use it.</p>
-
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">usb2ax</span>
-
-<span class="k">try</span><span class="p">:</span>
-  <span class="n">usb2ax</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-  <span class="n">usb2ax</span><span class="o">.</span><span class="n">sync_write</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s">"goal_position"</span><span class="p">,[</span><span class="mi">600</span><span class="p">,</span><span class="mi">400</span><span class="p">])</span> <span class="c"># Move servo 1 to 600 and servo 2 to 400</span>
-  <span class="n">data</span> <span class="o">=</span> <span class="n">usb2ax</span><span class="o">.</span><span class="n">sync_read</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s">"present_position"</span><span class="p">)</span> <span class="c"># Sync read</span>
-  <span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c"># Position of servo 1</span>
-  <span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c"># Position of servo 2</span>
-<span class="k">finally</span><span class="p">:</span>
-  <span class="n">usb2ax</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span> <span class="c"># Shut down the connection neatly</span>
-</pre></div>
-
-<h2>
-<a name="available-commands" class="anchor" href="#available-commands"><span class="octicon octicon-link"></span></a>Available commands</h2>
-
-<p>The library currently supports reading and writing via the above convention to
-the following AX12 control table addresses. Details of these settings can be found
-in the <a href="http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm">AX12 manual</a>.</p>
-
-<p>The <tt>read</tt> and <tt>write</tt> functions will raise exceptions if you
-try to access something not listed below, or try to write to something listed
-as read-only.</p>
-
-<table>
-<tr>
-<th>Parameter</th>
-<th>Control table address</th>
-<th>Read-only (R) or Read/Write(R/W)</th>
-</tr>
-<tr>
-<td>model_no</td>
-<td>0x00</td>
-<td>R</td>
-</tr>
-<tr>
-<td>firmware_version</td>
-<td>0x02</td>
-<td>R</td>
-</tr>
-<tr>
-<td>id</td>
-<td>0x03</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>baud_rate</td>
-<td>0x04</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>return_delay_time</td>
-<td>0x05</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>cw_angle_limit</td>
-<td>0x06</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>ccw_angle_limit</td>
-<td>0x08</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>max_torque</td>
-<td>0x0e</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>torque_enable</td>
-<td>0x18</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>cw_compliance_margin</td>
-<td>0x1a</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>ccw_compliance_margin</td>
-<td>0x1b</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>cw_compliance_slope</td>
-<td>0x1c</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>ccw_compliance_slope</td>
-<td>0x1d</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>goal_position</td>
-<td>0x1e</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>moving_speed</td>
-<td>0x20</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>torque_limit</td>
-<td>0x22</td>
-<td>R/W</td>
-</tr>
-<tr>
-<td>present_position</td>
-<td>0x24</td>
-<td>R</td>
-</tr>
-<tr>
-<td>present_speed</td>
-<td>0x26</td>
-<td>R</td>
-</tr>
-<tr>
-<td>present_load</td>
-<td>0x28</td>
-<td>R</td>
-</tr>
-<tr>
-<td>punch</td>
-<td>0x30</td>
-<td>R/W</td>
-</tr>
-</table><h2>
-<a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting</h2>
-
-<h3>
-<a name="baud-rate" class="anchor" href="#baud-rate"><span class="octicon octicon-link"></span></a>Baud rate</h3>
-
-<p>Currently you can only use the 1Mhz baud rate setting. This is the default setting for most AX 12 servos. If yours is set to something else, you will need to change it via some other method by writing 1 to the control table address 0x04.</p>
-
-<h3>
-<a name="hardware-checks" class="anchor" href="#hardware-checks"><span class="octicon octicon-link"></span></a>Hardware checks</h3>
-
-<p>Make sure that</p>
-
-<ul>
-<li>The USB2AX is plugged into the USB port.</li>
-<li>There should be a green LED lit up on the USB2AX</li>
-<li>You have properly connected all the 3-wire serial connections.</li>
-<li>You have properly connected the power to the dynamixels. Remember that the USB2AX does not supply power to the motors, you have to connect that up separately (the USB2AX website has more information).
-
-<ul>
-<li>When you plug the power in, a red LED on the back of the servo should light up briefly.</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#asynchronous-access">Asynchronous access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#sync-read-write">Sync read/write</a></li>
 </ul>
 </li>
-<li>The red LED on the back of the servo should NOT be flashing permanently -- it should only light up briefly once when you connect the power. If it flashing that means the servo is in an error state. You can usually fix this by disconnecting then reconnecting the power.</li>
-</ul><h3>
-<a name="connection-problems" class="anchor" href="#connection-problems"><span class="octicon octicon-link"></span></a>Connection problems</h3>
+<li class="toctree-l1"><a class="reference internal" href="detail.html">Detailed instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="detail.html#initializing-the-usb2ax">Initializing the USB2AX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="detail.html#bus-scanning">Bus scanning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="detail.html#sync-read-delay-timing">Sync read delay timing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="detail.html#control-tables">Control tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usb2ax.html">API reference for usb2ax</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
 
-<p>If you get this error message:</p>
 
-<pre><code>usb2ax.InitError: There was a problem connecting to the USB2AX at /dev/ttyACM0
-</code></pre>
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="#">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="installation.html">Installation</a>&#160;&#160;»
+        </p>
 
-<p>Try first running dmesg to check that the USB2AX is connecting correctly, you should see something
-like</p>
+      </div>
 
-<pre><code>[ 9216.979357] usb 3-3.3: new full-speed USB device number 21 using xhci_hcd
-[ 9216.992828] usb 3-3.3: New USB device found, idVendor=16d0, idProduct=06a7
-[ 9216.992839] usb 3-3.3: New USB device strings: Mfr=1, Product=2, SerialNumber=220
-[ 9216.992845] usb 3-3.3: Product: USB2AX
-[ 9216.992849] usb 3-3.3: Manufacturer: Xevelabs
-[ 9216.992853] usb 3-3.3: SerialNumber: 6403635373035121E161
-[ 9216.993668] usb 3-3.3: ep 0x82 - rounding interval to 1024 microframes, ep desc says 2040 microframes
-[ 9216.994410] cdc_acm 3-3.3:1.0: ttyACM0: USB ACM device
-</code></pre>
-
-<p>If it hasn't connected, try the USB2AX <a href="http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax">website</a> for some help.</p>
-
-<p>Note the name <tt>ttyACM0</tt> -- if you get something else like <tt>ttyACM1</tt> then
-you need to call <tt>usb2ax.initialize(1)</tt>.</p>
-
-<p>Check the permissions on the device. You will probably see something like this:</p>
-
-<pre><code>$ ls -lh /dev/ttyACM0 
-crw-rw----. 1 root dialout 166, 0 Jun  4 11:55 /dev/ttyACM0
-</code></pre>
-
-<p>Note the group name <tt>dialout</tt>. Check your user's current groups with <tt>groups</tt>.
-You may need to add your user to the dialout group:</p>
-
-<pre><code>$ usermod -a -G dialout &lt;your_username&gt;
-</code></pre>
-
-<p>The group change only takes effect when you login. So either logout then in again, or if you are in
-a terminal you can do <tt>su - your_username</tt> to get a new login session.</p>
-
-<p>Finally, if you have modem-manager running (which might be the case on complete desktop
-Linux installs, probably less likely to be a problem on Raspberry Pi etc), it
-may lock access to the serial port. Try
-<tt>sudo killall modem-manager</tt>. If that works, you may be able to get rid of it permanently by doing</p>
-
-<pre><code>$ cd /usr/share/dbus-1/system-services
-$ mv org.freedesktop.ModemManager.service org.freedesktop.ModemManager.service.disabled
-</code></pre>
-
-<p>If you still have problems, check if anything else is locking the serial port with</p>
-
-<pre><code>$ sudo lsof | grep ACM
-</code></pre>
-
-<p>The output of this should ideally be nothing. If it isn't, try and get rid of whatever is there.</p>
-
-<h2>
-<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>TODO</h2>
-
-<p>Support all the parameter settings.</p>
-
-<p>Better documentation.</p>
-
-<p>Interface for setting angles in radians.</p>
-
-<h2>
-<a name="author" class="anchor" href="#author"><span class="octicon octicon-link"></span></a>Author</h2>
-
-<p><a href="http://www.jamesthorniley.com">James Thorniley</a></p>
-      </section>
+    <div class="footer">
+        &copy; Copyright 2013, James Thorniley.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">PyUSB2AX maintained by <a href="https://github.com/jthorniley">jthorniley</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-41449164-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
-
-
   </body>
 </html>

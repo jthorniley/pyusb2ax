@@ -1,0 +1,486 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Detailed instructions &mdash; PyUSB2AX pre-release documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'pre-release',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="PyUSB2AX pre-release documentation" href="index.html" />
+    <link rel="next" title="API reference for usb2ax" href="usb2ax.html" />
+    <link rel="prev" title="Quick start" href="quickstart.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>PyUSB2AX pre-release documentation</span></a></h1>
+        <h2 class="heading"><span>Detailed instructions</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="quickstart.html">Quick start</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="usb2ax.html">API reference for usb2ax</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="detailed-instructions">
+<h1>Detailed instructions<a class="headerlink" href="#detailed-instructions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="initializing-the-usb2ax">
+<h2>Initializing the USB2AX<a class="headerlink" href="#initializing-the-usb2ax" title="Permalink to this headline">¶</a></h2>
+<p>When you physically connect the USB2AX, it registers itself in the
+<cite>/dev</cite> diretory. In all probability it will register itself as
+<cite>/dev/ttyACM0</cite>, however it may come up as <cite>/dev/ttyACM1</cite>. You can
+check what has happened by pluggin it in and running dmesg,
+from which you should get output like this:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>dmesg | grep -C 7 ACM
+<span class="o">[</span>12917.687364<span class="o">]</span> usb 3-3.4: new full-speed USB device number 66 using xhci_hcd
+<span class="o">[</span>12917.700656<span class="o">]</span> usb 3-3.4: New USB device found, <span class="nv">idVendor</span><span class="o">=</span>16d0, <span class="nv">idProduct</span><span class="o">=</span>06a7
+<span class="o">[</span>12917.700662<span class="o">]</span> usb 3-3.4: New USB device strings: <span class="nv">Mfr</span><span class="o">=</span>1, <span class="nv">Product</span><span class="o">=</span>2, <span class="nv">SerialNumber</span><span class="o">=</span>220
+<span class="o">[</span>12917.700664<span class="o">]</span> usb 3-3.4: Product: USB2AX
+<span class="o">[</span>12917.700666<span class="o">]</span> usb 3-3.4: Manufacturer: Xevelabs
+<span class="o">[</span>12917.700668<span class="o">]</span> usb 3-3.4: SerialNumber: 6403635373035121E161
+<span class="o">[</span>12917.701516<span class="o">]</span> usb 3-3.4: ep 0x82 - rounding interval to 1024 microframes, ep desc says 2040 microframes
+<span class="o">[</span>12917.701784<span class="o">]</span> cdc_acm 3-3.4:1.0: ttyACM0: USB ACM device
+</pre></div>
+</div>
+<p>If the last line doesn&#8217;t say <cite>ttyACM0</cite>, e.g. it says <cite>ttyACM1</cite>, then you will
+need to initialize your controller with</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Controller</span><span class="p">(</span><span class="n">device_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Where the <cite>device_id</cite> is set to the number on the end of the device name shown.</p>
+</div>
+<div class="section" id="bus-scanning">
+<h2>Bus scanning<a class="headerlink" href="#bus-scanning" title="Permalink to this headline">¶</a></h2>
+<p>When you instantiate a <a class="reference internal" href="usb2ax.html#usb2ax.Controller" title="usb2ax.Controller"><tt class="xref py py-class docutils literal"><span class="pre">usb2ax.Controller</span></tt></a> it will scan the bus for connected
+servos and print out information relating to them. For example you should see an
+output like this:</p>
+<div class="highlight-python"><pre>usb2ax: Initiating scan...
+usb2ax: USB2AX          : /dev/ttyACM0
+usb2ax: AX-12           : 1
+usb2ax: AX-12           : 2
+usb2ax: AX-12           : 3
+usb2ax: AX-12           : 4
+usb2ax: AX-12           : 5
+usb2ax: AX-12           : 6
+usb2ax: AX-12           : 16
+usb2ax: AX-12           : 17
+usb2ax: AX-12           : 18
+usb2ax: Model no.       : 16897
+usb2ax: Firmware version: 3
+usb2ax: Success!</pre>
+</div>
+<p>You should see a line for every connected servo. The model no. and
+firmware version at the end of the list relate to the USB2AX device
+itself. If it is not the same as shown above, then you probably
+have a different version of the device to the author, which is unlikely
+to be a huge problem.</p>
+<p>If you don&#8217;t see all your servos listed this is likely to
+be a problem. Ensure that your servos are set to
+communicate at 1Mbps and that you do not have any ID conflicts &#8211;
+the servos are all configured with ID 1 to start with. To change
+this, you will need to connect each servo you are using one at a time,
+and simply use</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">()</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
+    <span class="n">dxl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">,[</span><span class="n">NEW</span> <span class="n">ID</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sync-read-delay-timing">
+<span id="sync-read-detail"></span><h2>Sync read delay timing<a class="headerlink" href="#sync-read-delay-timing" title="Permalink to this headline">¶</a></h2>
+<p>If you use the <tt class="xref py py-func docutils literal"><span class="pre">sync_read()</span></tt> function you are advised to initialize the
+controller with the <cite>fix_sync_read_delay</cite> argument set to True. You can take
+this on trust ignore this section, but if you would like to know why read on.</p>
+<p>The USB2AX
+<a class="reference external" href="http://www.xevelabs.com/doku.php?id=product:usb2ax:advanced_instructions">SYNC_READ</a>
+functionality supported by this library is a useful way to get quicker reads from multiple
+servos. It allows the USB2AX device to send multiple read requests to
+different devices, then collate all the responses and send it back to the client
+application as one packet. This reduces the latency introduced by the
+USB to serial port conversion.</p>
+<p>When an individual READ instruction is sent to a servo, the servo waits a short
+time to send a reply. This timing can be set in the servo&#8217;s control
+table. Out of the box, Dynamixel AX-12 servos have this set to a value
+of 250. This appears to be an unreliable setting for use with the
+SYNC_READ function. To fix this, you need to set this value to something
+much lower. To make this easier, PyUSB2AX can do this automatically for
+you when necessary if you simply set <cite>fix_sync_read_delay</cite> to True
+when instantiating your <cite>Controller</cite>. This will (if necessary)
+change the return delay settings for poorly configured dynamixels
+to a value of 20. If you don&#8217;t use <cite>fix_sync_read_delay</cite> and you
+connect a dynamixel with the default delay time set, you may see an
+output like this:</p>
+<div class="highlight-python"><pre>usb2ax: Initiating scan...
+usb2ax: USB2AX          : /dev/ttyACM0
+usb2ax: AX-12           : 1
+usb2ax: Delay time is 250 -- you cannot use sync_read
+usb2ax: To fix this automatically call initialize with fix_sync_read_delay=True</pre>
+</div>
+<p>If you see this message, then any calls to sync_read with throw a
+<cite>SyncReadError</cite>. If you re-run with <cite>fix_sync_read_delay=True</cite> you will see</p>
+<div class="highlight-python"><pre>usb2ax: Initiating scan...
+usb2ax: USB2AX          : /dev/ttyACM0
+usb2ax: AX-12           : 1
+usb2ax: INFO: Servo 1 return delay set to 20 to make compatible with sync_read</pre>
+</div>
+<p>Now you can use <cite>sync_read</cite> freely.</p>
+</div>
+<div class="section" id="control-tables">
+<h2>Control tables<a class="headerlink" href="#control-tables" title="Permalink to this headline">¶</a></h2>
+<p>The servos are controlled by updated the control tables. Below are full references for
+the control tables. The parameter name on the left most column can be used as arguments
+to <cite>read</cite>, <cite>write</cite>, <cite>sync_read</cite> and <cite>sync_write</cite>. For example, if you pass
+&#8220;goal_position&#8221; as the argument to <cite>write</cite>, we will update the control table
+address 0x1E, which is listed as referencng the target position in the
+Dynamixel <a class="reference external" href="http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm">manual</a>.</p>
+<p>In theory at least we support both
+AX-12/18 and MX-28T servos, which have slightly different control tables. Most
+of the addresses are the same, so for example if you are writing to &#8220;goal_position&#8221;
+it is not important.</p>
+<p>In theory (this is untested) you can connect both AX and MX servos to the same bus.
+You can even sync_read and sync_write to both types of servos at the same time,
+provided you are accessing a parameter that is the same in both types of
+servo. If you try to <cite>write</cite> to &#8220;goal_acceleration&#8221; on an AX-12 servo for example, you will
+get a <tt class="xref py py-class docutils literal"><span class="pre">usb2ax.UnknownParameterError</span></tt>, likewise if you try to
+<cite>sync_write</cite> to &#8220;goal_acceleration&#8221; on a collection of servos where <em>any</em> of the
+servos is an AX-12.</p>
+<div class="section" id="ax-12-18-control-table">
+<h3>AX-12/18 Control table<a class="headerlink" href="#ax-12-18-control-table" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="27%" />
+<col width="41%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Control table address</th>
+<th class="head">Read-only (R) or Read/Write(R/W)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>model_no</td>
+<td>0x00</td>
+<td>R</td>
+</tr>
+<tr class="row-odd"><td>firmware_version</td>
+<td>0x02</td>
+<td>R</td>
+</tr>
+<tr class="row-even"><td>id</td>
+<td>0x03</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>baud_rate</td>
+<td>0x04</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>return_delay_time</td>
+<td>0x05</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>cw_angle_limit</td>
+<td>0x06</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>ccw_angle_limit</td>
+<td>0x08</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>high_limit_temp</td>
+<td>0x0B</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>low_limit_voltage</td>
+<td>0x0C</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>high_limit_voltage</td>
+<td>0x0D</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>max_torque</td>
+<td>0x0E</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>status_return_level</td>
+<td>0x10</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>alarm_led</td>
+<td>0x11</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>alarm_shutdown</td>
+<td>0x12</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>torque_enable</td>
+<td>0x18</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>led</td>
+<td>0x19</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>cw_compliance_margin</td>
+<td>0x1A</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>ccw_compliance_margin</td>
+<td>0x1B</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>cw_compliance_slope</td>
+<td>0x1C</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>ccw_compliance_slope</td>
+<td>0x1D</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>goal_position</td>
+<td>0x1E</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>moving_speed</td>
+<td>0x20</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>torque_limit</td>
+<td>0x22</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>present_position</td>
+<td>0x24</td>
+<td>R</td>
+</tr>
+<tr class="row-even"><td>present_speed</td>
+<td>0x26</td>
+<td>R</td>
+</tr>
+<tr class="row-odd"><td>present_load</td>
+<td>0x28</td>
+<td>R</td>
+</tr>
+<tr class="row-even"><td>present_voltage</td>
+<td>0x2A</td>
+<td>R</td>
+</tr>
+<tr class="row-odd"><td>present_temp</td>
+<td>0x2A</td>
+<td>R</td>
+</tr>
+<tr class="row-even"><td>registered</td>
+<td>0x2C</td>
+<td>R</td>
+</tr>
+<tr class="row-odd"><td>moving</td>
+<td>0x2E</td>
+<td>R</td>
+</tr>
+<tr class="row-even"><td>lock</td>
+<td>0x2F</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>punch</td>
+<td>0x30</td>
+<td>R/W</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mx-28t-control-table">
+<h3>MX-28T Control table<a class="headerlink" href="#mx-28t-control-table" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="27%" />
+<col width="41%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Control table address</th>
+<th class="head">Read-only (R) or Read/Write(R/W)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>model_no</td>
+<td>0x00</td>
+<td>R</td>
+</tr>
+<tr class="row-odd"><td>firmware_version</td>
+<td>0x02</td>
+<td>R</td>
+</tr>
+<tr class="row-even"><td>id</td>
+<td>0x03</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>baud_rate</td>
+<td>0x04</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>return_delay_time</td>
+<td>0x05</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>cw_angle_limit</td>
+<td>0x06</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>ccw_angle_limit</td>
+<td>0x08</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>high_limit_temp</td>
+<td>0x0B</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>low_limit_voltage</td>
+<td>0x0C</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>high_limit_voltage</td>
+<td>0x0D</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>max_torque</td>
+<td>0x0E</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>status_return_level</td>
+<td>0x10</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>alarm_led</td>
+<td>0x11</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>alarm_shutdown</td>
+<td>0x12</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>torque_enable</td>
+<td>0x18</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>led</td>
+<td>0x19</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>d_gain</td>
+<td>0x1A</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>i_gain</td>
+<td>0x1B</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>p_gain</td>
+<td>0x1C</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>goal_position</td>
+<td>0x1E</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>moving_speed</td>
+<td>0x20</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>torque_limit</td>
+<td>0x22</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>present_position</td>
+<td>0x24</td>
+<td>R</td>
+</tr>
+<tr class="row-odd"><td>present_speed</td>
+<td>0x26</td>
+<td>R</td>
+</tr>
+<tr class="row-even"><td>present_load</td>
+<td>0x28</td>
+<td>R</td>
+</tr>
+<tr class="row-odd"><td>present_temp</td>
+<td>0x2A</td>
+<td>R</td>
+</tr>
+<tr class="row-even"><td>present_voltage</td>
+<td>0x2A</td>
+<td>R</td>
+</tr>
+<tr class="row-odd"><td>registered</td>
+<td>0x2C</td>
+<td>R</td>
+</tr>
+<tr class="row-even"><td>moving</td>
+<td>0x2E</td>
+<td>R</td>
+</tr>
+<tr class="row-odd"><td>lock</td>
+<td>0x2F</td>
+<td>R/W</td>
+</tr>
+<tr class="row-even"><td>punch</td>
+<td>0x30</td>
+<td>R/W</td>
+</tr>
+<tr class="row-odd"><td>goal_acceleration</td>
+<td>0x49</td>
+<td>R/W</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="quickstart.html">Quick start</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="usb2ax.html">API reference for usb2ax</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, James Thorniley.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

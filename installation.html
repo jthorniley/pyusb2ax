@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; PyUSB2AX pre-release documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'pre-release',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="PyUSB2AX pre-release documentation" href="index.html" />
+    <link rel="next" title="Quick start" href="quickstart.html" />
+    <link rel="prev" title="Welcome to PyUSB2AX’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>PyUSB2AX pre-release documentation</span></a></h1>
+        <h2 class="heading"><span>Installation</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Welcome to PyUSB2AX&#8217;s documentation!</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="quickstart.html">Quick start</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>Python 2.7 and Cython. You will also need the relevant hardware.</p>
+<ul class="simple">
+<li>One or more Dynamixel servos. This has been tested on the <a class="reference external" href="http://www.robotis.com/xe/dynamixel_en">Dynamixel AX-12</a> but
+the MX-28T model <em>should</em> also work.</li>
+<li>The wonderful <a class="reference external" href="http://xevelabs.com/doku.php?id=product:usb2ax:usb2ax">USB2AX</a> interface device created by Xevelabs.</li>
+<li>Some way to power the servos, e.g. a separate battery or the <a class="reference external" href="http://www.trossenrobotics.com/store/p/5886-SMPS2Dynamixel-Adapter.aspx">SMPS2Dynamixel</a> adapter.
+Refer to the Dynamixel <a class="reference external" href="http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm">manual</a> or the USB2AX website for further help with setting up the hardware.</li>
+</ul>
+</div>
+<div class="section" id="building">
+<h2>Building<a class="headerlink" href="#building" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>git clone git://github.com/jthorniley/pyusb2ax.git
+<span class="nv">$ </span><span class="nb">cd </span>pyusb2ax
+<span class="nv">$ </span>python setup.py install
+</pre></div>
+</div>
+<p>This does the following:</p>
+<ul>
+<li><p class="first">Downloads the Dynamixel SDK</p>
+</li>
+<li><dl class="first docutils">
+<dt>Patches it to make it compatible with the USB2AX.</dt>
+<dd><ul class="first last simple">
+<li>Specifically, that means turn the dxl_hal.c file into something more like Nicholas Saugnier&#8217;s <a class="reference external" href="https://paranoidstudio.assembla.com/code/paranoidstudio/git/node/blob/master/usb2ax/soft/dxl_hal.c">modified verision</a>. This is useful/necessary because the USB2AX does not behave exactly the same as the USB2Dynamixel which the SDK expects.</li>
+<li>And makes modifications to allow passing the sync_read instruction through the API.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Creates and installs a module called <a class="reference internal" href="usb2ax.html#module-usb2ax" title="usb2ax"><tt class="xref py py-mod docutils literal"><span class="pre">usb2ax</span></tt></a> which provides easy access to the dynamixel servos from Python.</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Welcome to PyUSB2AX&#8217;s documentation!</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="quickstart.html">Quick start</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, James Thorniley.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

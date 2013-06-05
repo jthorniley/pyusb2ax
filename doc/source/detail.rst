@@ -128,8 +128,29 @@ Now you can use `sync_read` freely.
 Control tables
 --------------
 
-AX-12 Control table
-^^^^^^^^^^^^^^^^^^^
+The servos are controlled by updated the control tables. Below are full references for
+the control tables. The parameter name on the left most column can be used as arguments
+to `read`, `write`, `sync_read` and `sync_write`. For example, if you pass
+"goal_position" as the argument to `write`, we will update the control table
+address 0x1E, which is listed as referencng the target position in the
+Dynamixel `manual <http://support.robotis.com/en/product/dynamixel/ax_series/dxl_ax_actuator.htm>`_.
+
+
+In theory at least we support both
+AX-12/18 and MX-28T servos, which have slightly different control tables. Most
+of the addresses are the same, so for example if you are writing to "goal_position"
+it is not important.
+
+In theory (this is untested) you can connect both AX and MX servos to the same bus.
+You can even sync_read and sync_write to both types of servos at the same time,
+provided you are accessing a parameter that is the same in both types of
+servo. If you try to `write` to "goal_acceleration" on an AX-12 servo for example, you will
+get a :py:class:`usb2ax.UnknownParameterError`, likewise if you try to
+`sync_write` to "goal_acceleration" on a collection of servos where *any* of the
+servos is an AX-12.
+
+AX-12/18 Control table
+^^^^^^^^^^^^^^^^^^^^^^
 
 ==========================   =====================    ================================
 Parameter                    Control table address    Read-only (R) or Read/Write(R/W)

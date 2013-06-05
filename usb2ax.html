@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API reference for usb2ax &mdash; PyUSB2AX pre-release documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'pre-release',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="PyUSB2AX pre-release documentation" href="index.html" />
+    <link rel="prev" title="Detailed instructions" href="detail.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>PyUSB2AX pre-release documentation</span></a></h1>
+        <h2 class="heading"><span>API reference for usb2ax</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="detail.html">Detailed instructions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="module-usb2ax">
+<span id="api-reference-for-usb2ax"></span><h1>API reference for usb2ax<a class="headerlink" href="#module-usb2ax" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="usb2ax.Controller">
+<em class="property">class </em><tt class="descclassname">usb2ax.</tt><tt class="descname">Controller</tt><big>(</big><span class="optional">[</span><em>device_id=0</em><span class="optional">]</span><span class="optional">[</span>, <em>fix_sync_delay_time=False</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#usb2ax.Controller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the connection to the USB2AX.</p>
+<p>This will set up the serial port and scan for servo devices attached
+to the bus. You should have all the servos you want to use attached
+and switched on before calling this.</p>
+<p>Suggested usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">(</span><span class="n">device_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
+  <span class="n">dxl</span><span class="o">.</span><span class="n">do_stuff</span><span class="o">...</span>
+</pre></div>
+</div>
+<p>The <cite>fix_sync_read_delay</cite> argument should probably
+be set to True. It will change the return delay time
+setting for each Dynamixel to something compatible
+with the USB2AX SYNC_READ function. It is set to False by
+default so as not to unexpectedly change entries in the
+attached servos&#8217; control tables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>device_id</strong> (<em>integer</em>) &#8211; Where the device is located. E.g.
+the default (0) represents /dev/ttyACM0</li>
+<li><strong>fix_sync_read_delay</strong> (<em>boolean</em>) &#8211; If True, automatically ensures
+that all connected dynamixels are configured correctly for
+using <a class="reference internal" href="#usb2ax.Controller.sync_read" title="usb2ax.Controller.sync_read"><tt class="xref py py-func docutils literal"><span class="pre">sync_read()</span></tt></a>. If this is False and <a class="reference internal" href="#usb2ax.Controller.sync_read" title="usb2ax.Controller.sync_read"><tt class="xref py py-func docutils literal"><span class="pre">sync_read()</span></tt></a>
+is called on a servo which is badly configured, an exception may
+be raised.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="usb2ax.Controller.write">
+<tt class="descname">write</tt><big>(</big><em>servo_id</em>, <em>parameter</em>, <em>value</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to control table of a single servo.</p>
+<p>For example, to move servo with ID 1 to its central
+point:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">()</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
+  <span class="n">dxl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;goal_position&quot;</span><span class="p">,</span> <span class="mi">512</span> <span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>servo_id</strong> (<em>integer</em>) &#8211; The bus ID of the servo to be written to.</li>
+<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to write.</li>
+<li><strong>value</strong> (<em>integer</em>) &#8211; The value to write.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ServoNotAttachedError</strong> &#8211; The servo with the given ID was not found on the bus when the object was created.</li>
+<li><strong>UnknownParameterError</strong> &#8211; The servo with the given ID does not support the parameter.</li>
+<li><strong>InvalidWriteParameterError</strong> &#8211; The parameter cannot be written because it is read-only.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="usb2ax.Controller.read">
+<tt class="descname">read</tt><big>(</big><em>servo_id</em>, <em>parameter</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read control table entry from a single servo.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>servo_id</strong> (<em>integer</em>) &#8211; The bus ID of the servo to read from.</li>
+<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to read.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The value in the control table at the specified point</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">integer</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ServoNotAttachedError</strong> &#8211; The servo with the given ID was not found on the bus when the object was created.</li>
+<li><strong>UnknownParameterError</strong> &#8211; The servo with the given ID does not support the parameter.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="usb2ax.Controller.sync_write">
+<tt class="descname">sync_write</tt><big>(</big><em>servo_ids</em>, <em>parameter</em>, <em>values</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.sync_write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to the control tables of several servos.</p>
+<p>Supply a list of servo ids, which parameter you want to change, and
+a list of new values.</p>
+<p>For example, to move servo 1 to position 600 and servo 2 to position 400:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">()</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
+  <span class="n">dxl</span><span class="o">.</span><span class="n">sync_write</span><span class="p">(</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="s">&quot;goal_position&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">600</span><span class="p">,</span><span class="mi">400</span><span class="p">]</span> <span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>servo_ids</strong> (<em>iterable</em>) &#8211; The bus IDs of the servos to modify.</li>
+<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to write.</li>
+<li><strong>values</strong> (<em>iterable</em>) &#8211; The values to write.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ServoNotAttachedError</strong> &#8211; At least one of the servos specified was not found on the bus when the object was created.</li>
+<li><strong>UnknownParameterError</strong> &#8211; At least one of the servos specified does not support the parameter.</li>
+<li><strong>InvalidWriteParameterError</strong> &#8211; The parameter cannot be written because it is read-only.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="usb2ax.Controller.sync_read">
+<tt class="descname">sync_read</tt><big>(</big><em>servo_id</em>, <em>parameter</em>, <em>value</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.sync_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read from the control tables of several servos.</p>
+<p>Supply a list of servo ids, which parameter you want to get.</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd><dl class="first last docutils">
+<dt>with Controller(fix_sync_read_delay=True) as dxl:</dt>
+<dd>usb2ax.sync_read( [1,2], &#8220;id&#8221; ) # Returns [1,2]</dd>
+</dl>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>servo_ids</strong> (<em>iterable</em>) &#8211; The bus IDs of the servos to read from.</li>
+<li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to read.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A list of values from the servos specified.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">list</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ServoNotAttachedError</strong> &#8211; At least one of the servos specified was not found on the bus when the object was created.</li>
+<li><strong>UnknownParameterError</strong> &#8211; At least one of the servos specified does not support the parameter.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="usb2ax.reset_usb2ax">
+<tt class="descclassname">usb2ax.</tt><tt class="descname">reset_usb2ax</tt><big>(</big><span class="optional">[</span><em>device_id=0</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#usb2ax.reset_usb2ax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the USB2AX device itself (rather than the attached servos).
+If this is successful the LED on the USB2AX will turn off for a few
+seconds then turn back on.</p>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="detail.html">Detailed instructions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, James Thorniley.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

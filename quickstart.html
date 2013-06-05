@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quick start &mdash; PyUSB2AX pre-release documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'pre-release',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="PyUSB2AX pre-release documentation" href="index.html" />
+    <link rel="next" title="Detailed instructions" href="detail.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>PyUSB2AX pre-release documentation</span></a></h1>
+        <h2 class="heading"><span>Quick start</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="installation.html">Installation</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="detail.html">Detailed instructions</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="quick-start">
+<h1>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="asynchronous-access">
+<h2>Asynchronous access<a class="headerlink" href="#asynchronous-access" title="Permalink to this headline">¶</a></h2>
+<p>To use the library to do normal asynchronous reads and writes to the servos,
+simply instantiate a <a class="reference internal" href="usb2ax.html#usb2ax.Controller" title="usb2ax.Controller"><tt class="xref py py-class docutils literal"><span class="pre">usb2ax.Controller</span></tt></a> using the with construction:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">()</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">actual_pos</span> <span class="o">=</span> <span class="n">dxl</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;present_position&quot;</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;Servo 1 is currently at </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">actual_pos</span>
+    <span class="k">except</span> <span class="n">usb2ax</span><span class="o">.</span><span class="n">ReadError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;There was an error reading from the dynamixel&quot;</span>
+
+    <span class="c">#To move servo 1 to the middle</span>
+    <span class="c">#(Valid range is 0-1024)</span>
+    <span class="n">dxl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;goal_position&quot;</span><span class="p">,</span><span class="mi">512</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sync-read-write">
+<h2>Sync read/write<a class="headerlink" href="#sync-read-write" title="Permalink to this headline">¶</a></h2>
+<p>PyUSB2AX also supports the SYNC_READ instruction provided by the USB2AX. This
+means you can make accesses to multiple servos rather quicker
+using synchronous reads and writes across several servos.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">(</span><span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
+
+    <span class="c">#Moves servo 1 to 400 and servo 2 to 600</span>
+    <span class="n">dxl</span><span class="o">.</span><span class="n">sync_write</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s">&quot;goal_position&quot;</span><span class="p">,[</span><span class="mi">400</span><span class="p">,</span><span class="mi">600</span><span class="p">])</span>
+
+    <span class="c">#Give it a little time to actually move</span>
+    <span class="kn">import</span> <span class="nn">time</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c">#Sync read should now tell us the final positions</span>
+    <span class="c">#of the servos.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">dxl</span><span class="o">.</span><span class="n">sync_read</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s">&quot;present_position&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">usb2ax</span><span class="o">.</span><span class="n">ReadError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;There was an error performing the sync_read&quot;</span>
+</pre></div>
+</div>
+<p>Note that when we initialized the <a class="reference internal" href="usb2ax.html#usb2ax.Controller" title="usb2ax.Controller"><tt class="xref py py-class docutils literal"><span class="pre">usb2ax.Controller</span></tt></a> we
+passed the argument <cite>fix_sync_read_delay=True</cite>. This will ensure that
+the dynamixels are properly configured to support synchronous reads,
+see <a class="reference internal" href="detail.html#sync-read-detail"><em>Sync read delay timing</em></a> for more information.</p>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="installation.html">Installation</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="detail.html">Detailed instructions</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, James Thorniley.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
