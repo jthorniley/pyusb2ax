@@ -118,8 +118,8 @@ output like this:
     usb2ax: Delay time is 250 -- you cannot use sync_read
     usb2ax: To fix this automatically call initialize with fix_sync_read_delay=True
 
-If you see this message, then any calls to sync_read with throw a
-`SyncReadError`. If you re-run with `fix_sync_read_delay=True` you will see
+Any calls to sync_read with throw a
+`SyncReadError`. Running with `fix_sync_read_delay=True` produces
 
 ::
 
@@ -129,7 +129,7 @@ If you see this message, then any calls to sync_read with throw a
     usb2ax: INFO: Servo 1 return delay set to 1 to make compatible with sync_read
 
 
-Now you can use `sync_read` freely.
+After this, `sync_read` should work with no problems.
 
 .. _control-tables:
 

@@ -145,14 +145,14 @@ usb2ax: AX-12           : 1
 usb2ax: Delay time is 250 -- you cannot use sync_read
 usb2ax: To fix this automatically call initialize with fix_sync_read_delay=True</pre>
 </div>
-<p>If you see this message, then any calls to sync_read with throw a
-<cite>SyncReadError</cite>. If you re-run with <cite>fix_sync_read_delay=True</cite> you will see</p>
+<p>Any calls to sync_read with throw a
+<cite>SyncReadError</cite>. Running with <cite>fix_sync_read_delay=True</cite> produces</p>
 <div class="highlight-python"><pre>usb2ax: Initiating scan...
 usb2ax: USB2AX          : /dev/ttyACM0
 usb2ax: AX-12           : 1
 usb2ax: INFO: Servo 1 return delay set to 1 to make compatible with sync_read</pre>
 </div>
-<p>Now you can use <cite>sync_read</cite> freely.</p>
+<p>After this, <cite>sync_read</cite> should work with no problems.</p>
 </div>
 <div class="section" id="control-tables">
 <span id="id1"></span><h2>Control tables<a class="headerlink" href="#control-tables" title="Permalink to this headline">¶</a></h2>
