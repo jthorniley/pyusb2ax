@@ -161,7 +161,14 @@ usb2ax: USB2AX          : /dev/ttyACM%d
 
         try:
             model = read(i, "model_no")
-            sys.stderr.write("usb2ax: AX-%d           : %d\n" % (model, i))
+
+            if model in [12,18]:
+                model = "AX-%d   " % model
+            elif model == 29:
+                model = "MX-%dT  " % model
+            else:
+                model = "Model %d" % model
+            sys.stderr.write("usb2ax: %s        : %d\n" % (model, i))
             no_devices_connected =False
             try:
                 delay = read(i,"return_delay_time")
