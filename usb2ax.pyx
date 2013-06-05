@@ -153,42 +153,54 @@ def initialize(device_id=0, fix_sync_read_delay = False):
         raise InitError(device_id)
 
 
-    try:
-        sleep(0.01)
-        usb2ax_model_no = _read(0xFD, 0x00, 2)
-        sleep(0.01)
-        usb2ax_firmware_version = _read(0xFD, 0x02, 1)
-
-        sys.stderr.write( """
-USB2AX: Init
-USB2AX: Device          : /dev/ttyACM%d
-USB2AX: Model no.       : %d
-USB2AX: Firmware version: %d
-USB2AX: Success!
-""" % ( device_id, usb2ax_model_no, usb2ax_firmware_version ) )
-    except ReadError, e:
-        sys.stderr.write( """USB2AX: Could not read model and firmare information, this could be a problem...\n""" )
-
-    connected_devices = []
-
+    sys.stderr.write("""usb2ax: Initiating scan...
+usb2ax: USB2AX          : /dev/ttyACM%d
+"""% device_id)
+    no_devices_connected = True
     for i in range(1,253):
 
-        dxl_ping( i );
-        if dxl_get_result( ) == COMM_RXSUCCESS:
-            connected_devices.append(i)
+        try:
+            model = read(i, "model_no")
+            sys.stderr.write("usb2ax: AX-%d           : %d\n" % (model, i))
+            no_devices_connected =False
+            try:
+                delay = read(i,"return_delay_time")
+                if delay > 20:
+                    if fix_sync_read_delay:
+                        write(i,"return_delay_time",20)
+                        try:
+                            new_delay = read(i,"return_delay_time")
+                            sys.stderr.write("usb2ax: INFO: Servo %d return delay set to %d to make compatible with sync_read\n" % (i, new_delay) )
+                        except ReadError, e:
+                            sys.stderr.write("usb2ax: WARNING: Failed to fix return delay time for servo %d\n" % i )
+                            _global_sync_read_ok = 0
 
-    if len(connected_devices):
-        sys.stderr.write ("USB2AX: Found servo ids %s\n" % connected_devices )
-        for i in connected_devices:
-            delay = read(i,"return_delay_time")
-            if delay > 20:
-                if fix_sync_read_delay:
-                    write(i,"return_delay_time",20)
-                else:
-                    _global_sync_read_ok = 0
-    else:
-        sys.stderr.write ("USB2AX: WARNING: Cannot see any devices on the bus!\n" )
+                    else:
+                        sys.stderr.write("usb2ax: Delay time is %d -- you cannot use sync_read\n" % delay )
+                        sys.stderr.write("usb2ax: To fix this automatically call initialize with fix_sync_read_delay=True\n" )
+                        _global_sync_read_ok = 0
 
+            except ReadError, e:
+                sys.stderr.write("usb2ax: WARNING: Failed to establish return delay time for servo %d\n" % i )
+        except ReadError, e:
+            #Servo not connected, do nothing
+            pass
+
+    if no_devices_connected:
+        sys.stderr.write ("usb2ax: WARNING: Cannot see any devices on the bus!\n" )
+
+
+    try:
+        usb2ax_model_no = _read(0xFD, 0x00, 2)
+        usb2ax_firmware_version = _read(0xFD, 0x02, 1)
+
+        sys.stderr.write( """usb2ax: Model no.       : %d
+usb2ax: Firmware version: %d
+usb2ax: Success!
+""" % ( usb2ax_model_no, usb2ax_firmware_version ) )
+    except ReadError, e:
+        sys.stderr.write( """USB2AX: Could not read model and firmare information, this could be a problem...\n""" )
+        sys.stderr.write( "Error number %d\n" % e.error_id )
 
   
 def terminate():
@@ -228,6 +240,7 @@ cdef _read(int servo_id, int address, int length):
 
     cdef int result
     cdef int status
+
 
     func = dxl_read_byte
     if length == 2:
@@ -331,6 +344,6 @@ def reset(servo_id):
     dxl_set_txpacket_id(servo_id)
     dxl_set_txpacket_instruction(0x06) # Sync read
     dxl_set_txpacket_length(2)
-    dxl_txrx_packet()
+    dxl_tx_packet()
     status = dxl_get_result()
 

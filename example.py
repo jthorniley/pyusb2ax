@@ -53,7 +53,7 @@ try:
 
 
     except KeyboardInterrupt, e:
-        pass
+        print ""
 finally:
     usb2ax.terminate()
 

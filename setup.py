@@ -161,15 +161,14 @@ def download_dxl_sdk():
                 os.unlink(fname)
             except:
                 print "Could not run curl as subprocess, trying wget"
-                try:
-                    subprocess.call(["wget","http://support.robotis.com/en/baggage_files/dynamixel_sdk/dxl_sdk_linux_v1_01.zip","-O",fname])
+                subprocess.call(["wget","http://support.robotis.com/en/baggage_files/dynamixel_sdk/dxl_sdk_linux_v1_01.zip","-O",fname])
 
-                    zf = zipfile.ZipFile( fname, "r" )
-                    zf.extractall()
+                zf = zipfile.ZipFile( fname, "r" )
+                zf.extractall()
 
-                    os.unlink(fname)
-                except Exception, e:
-                    print """
+                os.unlink(fname)
+        except Exception, e:
+            print """
 ****************************** FAIL ***********************************************
 * I tried really hard but I could not download the dynamixel SDK. This
 * could be due to lack of network connection or maybe you could try 
@@ -186,7 +185,7 @@ def download_dxl_sdk():
 *
 **************************************************************************************
 """
-                    raise e
+            raise e
 
 
 
