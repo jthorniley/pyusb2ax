@@ -262,7 +262,7 @@ cdef _read(int servo_id, int address, int length):
 
 def read(servo_id,parameter):
     """
-    Attempt to read from a servo.
+    Read data from a servo.
 
     Reads the parameter given from the servo with bus ID servo_id.
 
