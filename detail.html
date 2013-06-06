@@ -123,9 +123,14 @@ and simply use</p>
 </div>
 <div class="section" id="sync-read-delay-timing">
 <span id="sync-read-detail"></span><h2>Sync read delay timing<a class="headerlink" href="#sync-read-delay-timing" title="Permalink to this headline">¶</a></h2>
-<p>When using the <tt class="xref py py-func docutils literal"><span class="pre">sync_read()</span></tt> function it is best to initialize the
-controller with the <cite>fix_sync_read_delay</cite> argument set to True. You can take
-this on trust and ignore this section, but if you would like to know why read on.</p>
+<p>When using the <tt class="xref py py-func docutils literal"><span class="pre">sync_read()</span></tt> function it is best to instantiate
+the <a class="reference internal" href="usb2ax.html#usb2ax.Controller" title="usb2ax.Controller"><tt class="xref py py-class docutils literal"><span class="pre">Controller</span></tt></a> object with the keyword
+argument
+<cite>fix_sync_read_delay</cite> set to True:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">usb2ax</span><span class="o">.</span><span class="n">Controller</span><span class="p">(</span><span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
+  <span class="o">...</span>
+</pre></div>
+</div>
 <p>The USB2AX
 <a class="reference external" href="http://www.xevelabs.com/doku.php?id=product:usb2ax:advanced_instructions">SYNC_READ</a>
 functionality supported by this library is a useful way to get quicker reads from multiple
@@ -140,11 +145,11 @@ of 250. This appears to be an unreliable setting for use with the
 SYNC_READ function &#8211; ideally it should be much lower.
 To avoid any problems, PyUSB2AX can fix the return delay time
 setting
-when necessary if <cite>fix_sync_read_delay</cite> is set to True
-when instantiating <a class="reference internal" href="usb2ax.html#usb2ax.Controller" title="usb2ax.Controller"><tt class="xref py py-class docutils literal"><span class="pre">usb2ax.Controller</span></tt></a>. This will (if necessary)
-change the return delay settings for poorly configured dynamixels
+automatically if <cite>fix_sync_read_delay</cite> is set to True
+when instantiating <a class="reference internal" href="usb2ax.html#usb2ax.Controller" title="usb2ax.Controller"><tt class="xref py py-class docutils literal"><span class="pre">Controller</span></tt></a>. This will (if necessary)
+change the return delay settings for poorly configured Dynamixels
 to a sensible value. If <cite>fix_sync_read_delay</cite> is False and a poorly configured
-dynamixel is connected, you may see an
+Dynamixel is connected, you may see an
 output like this:</p>
 <div class="highlight-python"><pre>usb2ax: Initiating scan...
 usb2ax: USB2AX          : /dev/ttyACM0

@@ -66,13 +66,6 @@ and switched on before calling this.</p>
   <span class="n">do</span> <span class="n">stuff</span><span class="o">...</span>
 </pre></div>
 </div>
-<p>The <cite>fix_sync_read_delay</cite> argument should probably
-be set to True. It will change the return delay time
-setting for each Dynamixel to something compatible
-with the USB2AX SYNC_READ function if necessary. It is set to False by
-default so as not to unexpectedly change entries in the
-control tables of
-attached servos.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -80,11 +73,10 @@ attached servos.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>device_id</strong> (<em>integer</em>) &#8211; Where the device is located. E.g.
 the default (0) represents /dev/ttyACM0</li>
-<li><strong>fix_sync_read_delay</strong> (<em>boolean</em>) &#8211; If True, automatically ensures
-that all connected dynamixels are configured correctly for
-using <a class="reference internal" href="#usb2ax.Controller.sync_read" title="usb2ax.Controller.sync_read"><tt class="xref py py-func docutils literal"><span class="pre">sync_read()</span></tt></a>. If this is False and <a class="reference internal" href="#usb2ax.Controller.sync_read" title="usb2ax.Controller.sync_read"><tt class="xref py py-func docutils literal"><span class="pre">sync_read()</span></tt></a>
-is called on a servo which is badly configured, an exception may
-be raised.</li>
+<li><strong>fix_sync_read_delay</strong> (<em>boolean</em>) &#8211; Set to True if you plan to
+use
+<a class="reference internal" href="#usb2ax.Controller.sync_read" title="usb2ax.Controller.sync_read"><tt class="xref py py-func docutils literal"><span class="pre">sync_read()</span></tt></a>. See <a class="reference internal" href="detail.html#sync-read-detail"><em>Sync read delay timing</em></a> for
+more information.</li>
 </ul>
 </td>
 </tr>
@@ -93,7 +85,7 @@ be raised.</li>
 <dl class="method">
 <dt id="usb2ax.Controller.write">
 <tt class="descname">write</tt><big>(</big><em>servo_id</em>, <em>parameter</em>, <em>value</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write to control table of a single servo.</p>
+<dd><p>Write to <a class="reference internal" href="detail.html#control-tables"><em>control table</em></a> of a single servo.</p>
 <p>For example, to move servo with ID 1 to its central
 point:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">()</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
@@ -125,7 +117,7 @@ point:</p>
 <dl class="method">
 <dt id="usb2ax.Controller.read">
 <tt class="descname">read</tt><big>(</big><em>servo_id</em>, <em>parameter</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read control table entry from a single servo.</p>
+<dd><p>Read a <a class="reference internal" href="detail.html#control-tables"><em>control table</em></a>  entry from a single servo.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -155,7 +147,7 @@ point:</p>
 <dl class="method">
 <dt id="usb2ax.Controller.sync_write">
 <tt class="descname">sync_write</tt><big>(</big><em>servo_ids</em>, <em>parameter</em>, <em>values</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.sync_write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write to the control tables of several servos.</p>
+<dd><p>Write to the <a class="reference internal" href="detail.html#control-tables"><em>control tables</em></a> of several servos.</p>
 <p>Supply a list of servo ids, which parameter you want to change, and
 a list of new values.</p>
 <p>For example, to move servo 1 to position 600 and servo 2 to position 400:</p>
@@ -188,7 +180,7 @@ a list of new values.</p>
 <dl class="method">
 <dt id="usb2ax.Controller.sync_read">
 <tt class="descname">sync_read</tt><big>(</big><em>servo_id</em>, <em>parameter</em>, <em>value</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.sync_read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read from the control tables of several servos.</p>
+<dd><p>Read from the <a class="reference internal" href="detail.html#control-tables"><em>control tables</em></a> of several servos.</p>
 <p>Supply a list of servo ids, which parameter you want to get.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">Controller</span><span class="p">(</span><span class="n">fix_sync_read_delay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">dxl</span><span class="p">:</span>
   <span class="n">usb2ax</span><span class="o">.</span><span class="n">sync_read</span><span class="p">(</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="s">&quot;id&quot;</span> <span class="p">)</span> <span class="c"># Returns [1,2]</span>

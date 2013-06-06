@@ -83,9 +83,17 @@ and simply use
 Sync read delay timing
 ----------------------
 
-When using the :py:func:`sync_read` function it is best to initialize the
-controller with the `fix_sync_read_delay` argument set to True. You can take
-this on trust and ignore this section, but if you would like to know why read on.
+When using the :py:func:`sync_read` function it is best to instantiate
+the :py:class:`Controller <usb2ax.Controller>` object with the keyword
+argument
+`fix_sync_read_delay` set to True:
+
+::
+
+  with usb2ax.Controller(fix_sync_read_delay=True) as dxl:
+    ...
+
+
 
 The USB2AX 
 `SYNC_READ <http://www.xevelabs.com/doku.php?id=product:usb2ax:advanced_instructions>`_
@@ -103,11 +111,11 @@ of 250. This appears to be an unreliable setting for use with the
 SYNC_READ function -- ideally it should be much lower.
 To avoid any problems, PyUSB2AX can fix the return delay time 
 setting
-when necessary if `fix_sync_read_delay` is set to True
-when instantiating :py:class:`usb2ax.Controller`. This will (if necessary)
-change the return delay settings for poorly configured dynamixels
+automatically if `fix_sync_read_delay` is set to True
+when instantiating :py:class:`Controller <usb2ax.Controller>`. This will (if necessary)
+change the return delay settings for poorly configured Dynamixels
 to a sensible value. If `fix_sync_read_delay` is False and a poorly configured
-dynamixel is connected, you may see an
+Dynamixel is connected, you may see an
 output like this:
 
 ::

@@ -18,28 +18,20 @@ API reference for usb2ax
      with Controller(device_id=0,fix_sync_read_delay=True) as dxl:
        do stuff...
 
-  The `fix_sync_read_delay` argument should probably
-  be set to True. It will change the return delay time
-  setting for each Dynamixel to something compatible
-  with the USB2AX SYNC_READ function if necessary. It is set to False by
-  default so as not to unexpectedly change entries in the
-  control tables of 
-  attached servos.
 
   :param device_id:
     Where the device is located. E.g.
     the default (0) represents /dev/ttyACM0
   :type device_id: integer
-  :param fix_sync_read_delay: If True, automatically ensures
-    that all connected dynamixels are configured correctly for
-    using :py:func:`sync_read`. If this is False and :py:func:`sync_read`
-    is called on a servo which is badly configured, an exception may
-    be raised.
+  :param fix_sync_read_delay: Set to True if you plan to
+    use 
+    :py:func:`sync_read`. See :ref:`sync-read-detail` for
+    more information.
   :type fix_sync_read_delay: boolean
 
   .. py:method:: write( servo_id, parameter, value )
 
-    Write to control table of a single servo.
+    Write to :ref:`control table<control-tables>` of a single servo.
 
     For example, to move servo with ID 1 to its central
     point:
@@ -61,7 +53,7 @@ API reference for usb2ax
 
   .. py:method:: read( servo_id, parameter )
 
-    Read control table entry from a single servo.
+    Read a :ref:`control table <control-tables>`  entry from a single servo.
 
     :param servo_id: The bus ID of the servo to read from.
     :type servo_id: integer
@@ -74,7 +66,7 @@ API reference for usb2ax
 
   .. py:method:: sync_write( servo_ids, parameter, values )
 
-    Write to the control tables of several servos.
+    Write to the :ref:`control tables <control-tables>` of several servos.
 
     Supply a list of servo ids, which parameter you want to change, and
     a list of new values.
@@ -98,7 +90,7 @@ API reference for usb2ax
 
   .. py:method:: sync_read( servo_id, parameter, value )
 
-    Read from the control tables of several servos.
+    Read from the :ref:`control tables <control-tables>` of several servos.
 
     Supply a list of servo ids, which parameter you want to get.
 
