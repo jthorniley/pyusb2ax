@@ -4,7 +4,7 @@ import math
 import sys
 
 with usb2ax.Controller(fix_sync_read_delay = True) as dxl:
-    servo_list = dxl.servo_list[:12]
+    servo_list = dxl.servo_list
 
 
     print "Servo: \t" + "\t".join( [str(x) for x in servo_list] ) + "\tRead rate (Hz)\tNumber of errors"

@@ -237,6 +237,9 @@ class Controller:
     servo_models = {}
     servo_map = {}
 
+    SYNC_READ_MAX = 9  # Sync reads will be split up to address at most this
+                       # number of servos at a time
+
     def __init__(self, device_id=0, fix_sync_read_delay = False):
         """
         Connect to the USB2AX device.
@@ -429,29 +432,40 @@ usb2ax: Success!
 
         n_servos = len(ids)
 
-        dxl_set_txpacket_id(253)#USB2AX reserved ID
-        dxl_set_txpacket_instruction(0x84) # Sync read
-        dxl_set_txpacket_length(n_servos+4)
+        full_result = []
 
-        dxl_set_txpacket_parameter(0,info[0]) 
-        dxl_set_txpacket_parameter(1,info[1])
+        for i in range((n_servos-1)/self.SYNC_READ_MAX + 1):
 
-        for i, id in enumerate(ids):
-            dxl_set_txpacket_parameter(2+i,id)
 
-        dxl_txrx_packet()
-        status = dxl_get_result()
-        if status == COMM_RXSUCCESS:
-            check_rx_error()
-            if info[1] == 2:
-                result = [ dxl_makeword(dxl_get_rxpacket_parameter(2*i),
-                    dxl_get_rxpacket_parameter(2*i+1) ) for i in range(n_servos) ]
+            block_ids = ids[i*self.SYNC_READ_MAX:(i+1)*self.SYNC_READ_MAX]
+
+            block_len = len(block_ids)
+
+            dxl_set_txpacket_id(253)#USB2AX reserved ID
+            dxl_set_txpacket_instruction(0x84) # Sync read
+            dxl_set_txpacket_length(block_len+4)
+
+            dxl_set_txpacket_parameter(0,info[0]) 
+            dxl_set_txpacket_parameter(1,info[1])
+
+            for i, id in enumerate(block_ids):
+                dxl_set_txpacket_parameter(2+i,id)
+
+            dxl_txrx_packet()
+            status = dxl_get_result()
+            if status == COMM_RXSUCCESS:
+                check_rx_error()
+                if info[1] == 2:
+                    result = [ dxl_makeword(dxl_get_rxpacket_parameter(2*i),
+                        dxl_get_rxpacket_parameter(2*i+1) ) for i in range(block_len) ]
+                else:
+                    result = [ dxl_get_rxpacket_parameter(i) for i in range(block_len) ]
             else:
-                result = [ dxl_get_rxpacket_parameter(i) for i in range(n_servos) ]
-        else:
-            raise ReadError(status)
+                raise ReadError(status)
 
-        return result
+            full_result.extend(result)
+
+        return full_result
 
     def reset(self, servo_id):
 
