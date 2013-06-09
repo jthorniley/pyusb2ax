@@ -28,6 +28,7 @@ PyUSB2AX also supports the SYNC_READ instruction provided by the USB2AX.
 
 ::
 
+    import time
     import usb2ax
     with usb2ax.Controller(fix_sync_read_delay=True) as dxl:
 
@@ -35,7 +36,6 @@ PyUSB2AX also supports the SYNC_READ instruction provided by the USB2AX.
         dxl.sync_write([1,2],"goal_position",[400,600])
 
         #Give it a little time to actually move
-        import time
         time.sleep(1.0)
 
         #Sync read should now tell us the final positions
