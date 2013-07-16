@@ -211,18 +211,18 @@ cdef _read(int servo_id, int address, int length):
     cdef int result
     cdef int status
 
-
-    func = dxl_read_byte
-    if length == 2:
-        func = dxl_read_word
-
-    result = func(servo_id, address )
-    status = dxl_get_result()
-    if ( status == 1):
-        return result
+    if length == 1:
+        result = dxl_read_byte( servo_id, address )
     else:
+        #Only other possibility is length=2 - 2-byte word rather than single byte
+        result = dxl_read_word( servo_id, address )
+
+    status = dxl_get_result()
+
+    if status != 1:
         raise ReadError(status)
 
+    return result
 
 class Controller:
     """
