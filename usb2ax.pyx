@@ -1,6 +1,5 @@
 
 import sys
-from time import sleep
 
 ERRBIT_VOLTAGE		 = 1
 ERRBIT_ANGLE		 = 2
