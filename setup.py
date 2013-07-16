@@ -169,21 +169,22 @@ def download_dxl_sdk():
                 os.unlink(fname)
         except Exception, e:
             print """
-****************************** FAIL ***********************************************
+****************************** FAIL *******************************************
 * I tried really hard but I could not download the dynamixel SDK. This
 * could be due to lack of network connection or maybe you could try 
 * installing curl or wget on your system.
 *
-* You will need to download it manually. It should be available at
+* If that doesn't work, you will need to download it manually. It 
+* should be available at
 *
 * http://support.robotis.com/en/baggage_files/dynamixel_sdk/dxl_sdk_linux_v1_01.zip
 *
 * Once you have it, unzip it so that there is a directory called
-* DXL_SDK_LINUX_v1_01 in the current directory and run 
+* DXL_SDK_LINUX_v1_01 in the current directory and re-run 
 *
-* python setup.py build again.
+* python setup.py build 
 *
-**************************************************************************************
+*******************************************************************************
 """
             raise e
 
