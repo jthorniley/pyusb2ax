@@ -29,7 +29,7 @@ API reference for usb2ax
     more information.
   :type fix_sync_read_delay: boolean
 
-  .. py:method:: write( servo_id, parameter, value )
+  .. py:method:: write( servo_id, parameter, value, register=False )
 
     Write to :ref:`control table<control-tables>` of a single servo.
 
@@ -41,12 +41,17 @@ API reference for usb2ax
       with Controller() as dxl:
         dxl.write( 1, "goal_position", 512 ) 
 
+    If register is set to True, will not make the servo perform the command right away, rather,
+    the command is buffered on the servo and will be executed when you call :py:func:`action`
+
     :param servo_id: The bus ID of the servo to be written to.
     :type servo_id: integer
     :param parameter: The control table point to write - a value allowed for the attached servo as listed in :ref:`control-tables`.
     :type parameter: string
     :param value: The value to write.
     :type value: integer
+    :param register: Whether to do a registered write (default False, i.e. execute command straight away).
+    :type register: boolean
     :raises ServoNotAttachedError: The servo with the given ID was not found on the bus when the object was created.
     :raises UnknownParameterError: The servo with the given ID does not support the parameter.
     :raises InvalidWriteParameterError: The parameter cannot be written because it is read-only.
@@ -107,6 +112,12 @@ API reference for usb2ax
     :rtype: list
     :raises ServoNotAttachedError: At least one of the servos specified was not found on the bus when the object was created.
     :raises UnknownParameterError: At least one of the servos specified does not support the parameter.
+
+  .. py:method:: action()
+
+    Executes any actions registered on the servos by previously calling :py:func:`write` with
+    the register argument set to True. This allows actions to be performed synchronously on many
+    servos.
 
 .. py:function:: reset_usb2ax( [device_id=0] )
 

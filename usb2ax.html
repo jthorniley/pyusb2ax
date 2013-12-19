@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -14,7 +16,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     'pre-release',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -84,7 +86,7 @@ more information.</li>
 </table>
 <dl class="method">
 <dt id="usb2ax.Controller.write">
-<tt class="descname">write</tt><big>(</big><em>servo_id</em>, <em>parameter</em>, <em>value</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>servo_id</em>, <em>parameter</em>, <em>value</em>, <em>register=False</em><big>)</big><a class="headerlink" href="#usb2ax.Controller.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write to <a class="reference internal" href="detail.html#control-tables"><em>control table</em></a> of a single servo.</p>
 <p>For example, to move servo with ID 1 to its central
 point:</p>
@@ -92,6 +94,8 @@ point:</p>
   <span class="n">dxl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;goal_position&quot;</span><span class="p">,</span> <span class="mi">512</span> <span class="p">)</span>
 </pre></div>
 </div>
+<p>If register is set to True, will not make the servo perform the command right away, rather,
+the command is buffered on the servo and will be executed when you call <a class="reference internal" href="#usb2ax.Controller.action" title="usb2ax.Controller.action"><tt class="xref py py-func docutils literal"><span class="pre">action()</span></tt></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -100,6 +104,7 @@ point:</p>
 <li><strong>servo_id</strong> (<em>integer</em>) &#8211; The bus ID of the servo to be written to.</li>
 <li><strong>parameter</strong> (<em>string</em>) &#8211; The control table point to write - a value allowed for the attached servo as listed in <a class="reference internal" href="detail.html#control-tables"><em>Control tables</em></a>.</li>
 <li><strong>value</strong> (<em>integer</em>) &#8211; The value to write.</li>
+<li><strong>register</strong> (<em>boolean</em>) &#8211; Whether to do a registered write (default False, i.e. execute command straight away).</li>
 </ul>
 </td>
 </tr>
@@ -212,6 +217,14 @@ a list of new values.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="usb2ax.Controller.action">
+<tt class="descname">action</tt><big>(</big><big>)</big><a class="headerlink" href="#usb2ax.Controller.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes any actions registered on the servos by previously calling <a class="reference internal" href="#usb2ax.Controller.write" title="usb2ax.Controller.write"><tt class="xref py py-func docutils literal"><span class="pre">write()</span></tt></a> with
+the register argument set to True. This allows actions to be performed synchronously on many
+servos.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
@@ -239,7 +252,7 @@ seconds then turn back on.</p>
 
     <div class="footer">
         &copy; Copyright 2013, James Thorniley.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
 <div class="footer">This page uses <a href="http://analytics.google.com/">
 Google Analytics</a> to collect statistics. You can disable it by blocking
